@@ -6,19 +6,20 @@
 Camera::Camera()
 {
 	updateCameraVectors();
+	updateViewMatrix();
+	updateProjectionMatrix();
 }
 
 void Camera::applyMovement(Movement movement, float delta_time)
 {
-	float velocity = speed * delta_time;
 	if (movement == Movement::FRONT)
-		position += front * velocity;
+		position += front * speed * delta_time;
 	if (movement == Movement::BACK)
-		position -= front * velocity;
+		position -= front * speed * delta_time;
 	if (movement == Movement::LEFT)
-		position -= right * velocity;
+		position -= right * speed * delta_time;
 	if (movement == Movement::RIGHT)
-		position += right * velocity;
+		position += right * speed * delta_time;
 }
 
 void Camera::processMouseMovement(float offset_x, float offset_y)
@@ -49,12 +50,12 @@ void Camera::updateCameraVectors()
 	up = glm::normalize(glm::cross(right, front));
 }
 
-glm::mat4 Camera::getViewMatrix()
+void Camera::updateViewMatrix()
 {
-	return glm::lookAt(position, position + front, up);
+	view = glm::lookAt(position, position + front, up);
 }
 
-glm::mat4 Camera::getProjectionMatrix()
+void Camera::updateProjectionMatrix()
 {
-	return glm::perspective(glm::radians(fov), 1920.0f / 1080.0f, 0.1f, 200.0f);
+	projection = glm::perspective(glm::radians(fov), 1920.0f / 1080.0f, 0.1f, 200.0f);
 }

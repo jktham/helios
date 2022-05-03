@@ -23,10 +23,13 @@ public:
 	glm::vec3 right{};
 	glm::vec3 up{};
 
+	glm::mat4 view;
+	glm::mat4 projection;
+
 	Camera();
 	void applyMovement(Movement movement, float delta_time);
 	void processMouseMovement(float offset_x, float offset_y);
 	void updateCameraVectors();
-	glm::mat4 getViewMatrix();
-	glm::mat4 getProjectionMatrix();
+	void updateViewMatrix();
+	void updateProjectionMatrix();
 };
