@@ -57,8 +57,8 @@ void Planet::generateBuffers()
 
 void Planet::generateMesh()
 {
-	int rings = 10;
-	int points = 12;
+	int rings = 50;
+	int points = 50;
 
 	float pi = 3.1415f;
 	float delta_theta = pi / (float)(rings + 1.0f);
@@ -67,6 +67,7 @@ void Planet::generateMesh()
 	float theta = 0.0f;
 	float phi = 0.0f;
 
+	// generate vertices
 	std::vector<float> vertex;
 	int vertex_count = 0;
 
@@ -94,63 +95,73 @@ void Planet::generateMesh()
 	vertices.insert(vertices.end(), vertex.begin(), vertex.end());
 	vertex_count += 1;
 
+	// generate indices
 	std::vector<unsigned int> index;
 	int index_count = 0;
 
-	for (unsigned int i = 1; i < points + 1; i++)
-	{
-		unsigned int north_pole = 0;
-		unsigned int i1 = north_pole;
-		unsigned int i2 = north_pole + i;
-		unsigned int i3 = north_pole + i % points + 1;
+	//      A
+	//     . .
+	//    .   .
+	//   .     .
+	//  .       .
+	// B.........C
 
-		index = { i1, i2, i3 };
+	for (unsigned int i = 1; i < (unsigned int)points + 1; i++)
+	{
+		unsigned int P = 0;
+		unsigned int A = P;
+		unsigned int B = P + i;
+		unsigned int C = P + i % points + 1;
+
+		index = { A, B, C };
 		indices.insert(indices.end(), index.begin(), index.end());
 		index_count += 1;
 	}
 
-	for (unsigned int i = 1; i < points + 1; i++)
+	for (unsigned int i = 1; i < (unsigned int)points + 1; i++)
 	{
-		unsigned int south_pole = vertex_count - 1;
-		unsigned int i1 = south_pole;
-		unsigned int i2 = south_pole - i;
-		unsigned int i3 = south_pole - i % points - 1;
+		unsigned int P = vertex_count - 1;
+		unsigned int A = P;
+		unsigned int B = P - i;
+		unsigned int C = P - i % points - 1;
 
-		index = { i1, i2, i3 };
+		index = { A, B, C };
 		indices.insert(indices.end(), index.begin(), index.end());
 		index_count += 1;
 	}
 
-	std::cout << index_count;
+	// A..........D
+	// ..         .
+	// .   .      .
+	// .      .   .
+	// .         ..
+	// B..........C
 
-	for (unsigned int i = 1; i < vertex_count - points; i++)
+	for (unsigned int r = 0; r < (unsigned int)rings - 1; r++)
 	{
-		unsigned int i1 = i;
-		unsigned int i2 = i + 1;
-		unsigned int i3 = i + points;
-
-		index = { i1, i2, i3 };
-		indices.insert(indices.end(), index.begin(), index.end());
-		index_count += 1;
-	}
-
-	/*for (unsigned int r = 0; r < rings - 1; r++)
-	{
-		for (unsigned int p = 0; p < points; p++)
+		for (unsigned int p = 0; p < (unsigned int)points; p++)
 		{
-			unsigned int i = r * (unsigned int)points + p;
+			unsigned int i = r * points + p + 1;
 
-			unsigned int i1 = i;
-			unsigned int i2 = i + 1;
-			unsigned int i3 = i + (unsigned int)points;
-			unsigned int i4 = i + (unsigned int)points + 1;
+			unsigned int A = i;
+			unsigned int D = i + 1;
+			unsigned int B = i + points;
+			unsigned int C = i + points + 1;
 
-			index = { i1, i3, i2 };
+			if (p == points - 1)
+			{
+				D = i - points + 1;
+				C = i + 1;
+			}
+
+			index = { A, B, C };
 			indices.insert(indices.end(), index.begin(), index.end());
-			index = { i4, i2, i3 };
+			index_count += 1;
+			index = { A, C, D };
 			indices.insert(indices.end(), index.begin(), index.end());
+			index_count += 1;
 		}
-	}*/
+	}
 }
 
 void Planet::updateModelMatrix()
@@ -187,7 +198,7 @@ void Planet::updateBuffers()
 
 	// element index buffer
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(int), &indices[0], GL_STATIC_DRAW);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(unsigned int), &indices[0], GL_STATIC_DRAW);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 
 	glBindVertexArray(0);
@@ -204,7 +215,7 @@ void Planet::draw()
 	glUseProgram(shader);
 	glBindVertexArray(VAO);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-	glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, (void*)0);
+	glDrawElements(GL_TRIANGLES, (GLsizei)indices.size(), GL_UNSIGNED_INT, (void*)0);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 	glBindVertexArray(0);
 	glUseProgram(0);
