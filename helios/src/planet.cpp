@@ -4,10 +4,12 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
+#include "stb_image.h"
 
 #include <vector>
 #include <fstream>
 #include <iostream>
+#include <math.h>
 
 void Planet::compileShader()
 {
@@ -48,6 +50,33 @@ void Planet::compileShader()
 	glDeleteShader(frag_shader);
 }
 
+void Planet::loadTextures()
+{
+	int width, height, channels;
+	unsigned char* data;
+
+	glGenTextures(1, &texture);
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, texture);
+
+	stbi_set_flip_vertically_on_load(true);
+	data = stbi_load("res/textures/test.png", &width, &height, &channels, 0);
+	if (data)
+	{
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+		glGenerateMipmap(GL_TEXTURE_2D);
+	}
+	stbi_image_free(data);
+
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST_MIPMAP_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+
+	glBindTexture(GL_TEXTURE_2D, 0);
+	glActiveTexture(0);
+}
+
 void Planet::generateBuffers()
 {
 	glGenVertexArrays(1, &VAO);
@@ -71,7 +100,12 @@ void Planet::generateMesh()
 	std::vector<float> vertex;
 	int vertex_count = 0;
 
-	vertex = { 0.0f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f };
+	vertex = {
+		0.0f, 0.0f, 1.0f,
+		0.0f, 0.0f, 1.0f,
+		0.5f + atan2(0.0f, 0.0f) / (2.0f * pi), 0.5f + asin(-1.0f) / pi,
+		1.0f, 1.0f, 1.0f, 1.0f
+	};
 	vertices.insert(vertices.end(), vertex.begin(), vertex.end());
 	vertex_count += 1;
 
@@ -84,14 +118,26 @@ void Planet::generateMesh()
 			float x = sin(theta) * cos(phi);
 			float y = sin(theta) * sin(phi);
 			float z = cos(theta);
+			float u = 0.5f + atan2(-x, -y) / (2.0f * pi);
+			float v = 0.5f + asin(-z) / pi;
 
-			vertex = { x, y, z, 1.0f, 1.0f, 1.0f, 1.0f };
+			vertex = {
+				x, y, z,
+				x, y, z,
+				u, v,
+				1.0f, 1.0f, 1.0f, 1.0f
+			};
 			vertices.insert(vertices.end(), vertex.begin(), vertex.end());
 			vertex_count += 1;
 		}
 	}
 
-	vertex = { 0.0f, 0.0f, -1.0f, 1.0f, 1.0f, 1.0f, 1.0f };
+	vertex = {
+		0.0f, 0.0f, -1.0f,
+		0.0f, 0.0f, -1.0f,
+		0.5f + atan2(0.0f, 0.0f) / (2.0f * pi), 0.5f + asin(1.0f) / pi,
+		1.0f, 1.0f, 1.0f, 1.0f
+	};
 	vertices.insert(vertices.end(), vertex.begin(), vertex.end());
 	vertex_count += 1;
 
@@ -186,14 +232,26 @@ void Planet::updateBuffers()
 
 	// vertex attribute (position)
 	glBindBuffer(GL_ARRAY_BUFFER, VBO);
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 7 * sizeof(float), (void*)(0 * sizeof(float)));
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 12 * sizeof(float), (void*)(0 * sizeof(float)));
 	glEnableVertexAttribArray(0);
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+	// vertex attribute (normal)
+	glBindBuffer(GL_ARRAY_BUFFER, VBO);
+	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 12 * sizeof(float), (void*)(3 * sizeof(float)));
+	glEnableVertexAttribArray(1);
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+	// vertex attribute (texcoord)
+	glBindBuffer(GL_ARRAY_BUFFER, VBO);
+	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 12 * sizeof(float), (void*)(6 * sizeof(float)));
+	glEnableVertexAttribArray(2);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 
 	// vertex attribute (color)
 	glBindBuffer(GL_ARRAY_BUFFER, VBO);
-	glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, 7 * sizeof(float), (void*)(3 * sizeof(float)));
-	glEnableVertexAttribArray(1);
+	glVertexAttribPointer(3, 4, GL_FLOAT, GL_FALSE, 12 * sizeof(float), (void*)(8 * sizeof(float)));
+	glEnableVertexAttribArray(3);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 
 	// element index buffer
@@ -207,16 +265,23 @@ void Planet::updateBuffers()
 void Planet::draw()
 {
 	glUseProgram(shader);
+	glUniform1i(glGetUniformLocation(shader, "tex"), 0);
 	glUniformMatrix4fv(glGetUniformLocation(shader, "model"), 1, GL_FALSE, glm::value_ptr(model));
 	glUniformMatrix4fv(glGetUniformLocation(shader, "view"), 1, GL_FALSE, glm::value_ptr(view));
 	glUniformMatrix4fv(glGetUniformLocation(shader, "projection"), 1, GL_FALSE, glm::value_ptr(projection));
 	glUseProgram(0);
 
 	glUseProgram(shader);
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, texture);
 	glBindVertexArray(VAO);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+
 	glDrawElements(GL_TRIANGLES, (GLsizei)indices.size(), GL_UNSIGNED_INT, (void*)0);
+
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 	glBindVertexArray(0);
+	glBindTexture(GL_TEXTURE_2D, 0);
+	glActiveTexture(0);
 	glUseProgram(0);
 }

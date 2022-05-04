@@ -64,6 +64,7 @@ int main()
 	float delta_time = 0.0f;
 
 	planet.compileShader();
+	planet.loadTextures();
 	planet.generateBuffers();
 	planet.generateMesh();
 	planet.updateBuffers();

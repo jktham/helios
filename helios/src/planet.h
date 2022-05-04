@@ -13,7 +13,7 @@ public:
 	glm::mat4 view{};
 	glm::mat4 projection{};
 
-	float radius = 1.0f;
+	float radius = 10.0f;
 	std::vector<float> vertices;
 	std::vector<unsigned int> indices;
 
@@ -21,8 +21,10 @@ public:
 	GLuint VBO = 0;
 	GLuint EBO = 0;
 	GLuint shader = 0;
+	GLuint texture = 0;
 
 	void compileShader();
+	void loadTextures();
 	void generateBuffers();
 	void generateMesh();
 	void updateModelMatrix();
