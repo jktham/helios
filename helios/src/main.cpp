@@ -128,20 +128,24 @@ void processInputState(GLFWwindow* window, float delta_time)
 	}
 }
 
-bool wireframe = false;
+int render_mode = 0;
 
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
 	if (key == GLFW_KEY_TAB && action == GLFW_PRESS)
 	{
-		wireframe = !wireframe;
-		if (wireframe)
+		render_mode = (render_mode + 1) % 3;
+		if (render_mode == 0)
+		{
+			glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+		}
+		else if (render_mode == 1)
 		{
 			glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 		}
-		else
+		else if (render_mode == 2)
 		{
-			glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+			glPolygonMode(GL_FRONT_AND_BACK, GL_POINT);
 		}
 	}
 }

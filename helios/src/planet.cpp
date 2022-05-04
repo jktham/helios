@@ -68,14 +68,16 @@ void Planet::generateMesh()
 	float phi = 0.0f;
 
 	std::vector<float> vertex;
+	int vertex_count = 0;
 
 	vertex = { 0.0f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f };
 	vertices.insert(vertices.end(), vertex.begin(), vertex.end());
+	vertex_count += 1;
 
-	for (int ring = 0; ring < rings; ring++)
+	for (int r = 0; r < rings; r++)
 	{
 		theta += delta_theta;
-		for (int point = 0; point < points; point++)
+		for (int p = 0; p < points; p++)
 		{
 			phi += delta_phi;
 			float x = sin(theta) * cos(phi);
@@ -84,15 +86,55 @@ void Planet::generateMesh()
 
 			vertex = { x, y, z, 1.0f, 1.0f, 1.0f, 1.0f };
 			vertices.insert(vertices.end(), vertex.begin(), vertex.end());
+			vertex_count += 1;
 		}
 	}
 
 	vertex = { 0.0f, 0.0f, -1.0f, 1.0f, 1.0f, 1.0f, 1.0f };
 	vertices.insert(vertices.end(), vertex.begin(), vertex.end());
+	vertex_count += 1;
 
 	std::vector<unsigned int> index;
+	int index_count = 0;
 
-	for (unsigned int r = 0; r < rings - 1; r++)
+	for (unsigned int i = 1; i < points + 1; i++)
+	{
+		unsigned int north_pole = 0;
+		unsigned int i1 = north_pole;
+		unsigned int i2 = north_pole + i;
+		unsigned int i3 = north_pole + i % points + 1;
+
+		index = { i1, i2, i3 };
+		indices.insert(indices.end(), index.begin(), index.end());
+		index_count += 1;
+	}
+
+	for (unsigned int i = 1; i < points + 1; i++)
+	{
+		unsigned int south_pole = vertex_count - 1;
+		unsigned int i1 = south_pole;
+		unsigned int i2 = south_pole - i;
+		unsigned int i3 = south_pole - i % points - 1;
+
+		index = { i1, i2, i3 };
+		indices.insert(indices.end(), index.begin(), index.end());
+		index_count += 1;
+	}
+
+	std::cout << index_count;
+
+	for (unsigned int i = 1; i < vertex_count - points; i++)
+	{
+		unsigned int i1 = i;
+		unsigned int i2 = i + 1;
+		unsigned int i3 = i + points;
+
+		index = { i1, i2, i3 };
+		indices.insert(indices.end(), index.begin(), index.end());
+		index_count += 1;
+	}
+
+	/*for (unsigned int r = 0; r < rings - 1; r++)
 	{
 		for (unsigned int p = 0; p < points; p++)
 		{
@@ -108,7 +150,7 @@ void Planet::generateMesh()
 			index = { i4, i2, i3 };
 			indices.insert(indices.end(), index.begin(), index.end());
 		}
-	}
+	}*/
 }
 
 void Planet::updateModelMatrix()
