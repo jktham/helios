@@ -1,3 +1,5 @@
+#pragma once
+
 #include <glad/glad.h>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
@@ -21,7 +23,7 @@ public:
 	GLuint VBO = 0;
 	GLuint EBO = 0;
 	GLuint shader = 0;
-	GLuint texture = 0;
+	GLuint texture1 = 0;
 
 	void compileShader();
 	void loadTextures();

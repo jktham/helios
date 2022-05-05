@@ -1,4 +1,6 @@
 #include "planet.h"
+#include "camera.h"
+#include "global.h"
 
 #include <glad/glad.h>
 #include <glm/glm.hpp>
@@ -55,9 +57,9 @@ void Planet::loadTextures()
 	int width, height, channels;
 	unsigned char* data;
 
-	glGenTextures(1, &texture);
+	glGenTextures(1, &texture1);
 	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, texture);
+	glBindTexture(GL_TEXTURE_2D, texture1);
 
 	stbi_set_flip_vertically_on_load(true);
 	data = stbi_load("res/textures/test.png", &width, &height, &channels, 0);
@@ -320,7 +322,19 @@ void Planet::updateBuffers()
 void Planet::draw()
 {
 	glUseProgram(shader);
-	glUniform1i(glGetUniformLocation(shader, "tex"), 0);
+	glUniform3f(glGetUniformLocation(shader, "light.position"), -100.0f, -100.0f, 100.0f);
+	glUniform3f(glGetUniformLocation(shader, "light.ambient"), 0.02f, 0.02f, 0.02f);
+	glUniform3f(glGetUniformLocation(shader, "light.diffuse"), 0.6f, 0.6f, 0.6f);
+	glUniform3f(glGetUniformLocation(shader, "light.specular"), 0.2f, 0.2f, 0.2f);
+
+	glUniform3f(glGetUniformLocation(shader, "material.ambient"), 1.0f, 1.0f, 1.0f);
+	glUniform3f(glGetUniformLocation(shader, "material.diffuse"), 1.0f, 1.0f, 1.0f);
+	glUniform3f(glGetUniformLocation(shader, "material.specular"), 1.0f, 1.0f, 1.0f);
+	glUniform1f(glGetUniformLocation(shader, "material.shininess"), 8.0f);
+
+	glUniform3f(glGetUniformLocation(shader, "view_pos"), camera.position.x, camera.position.y, camera.position.z);
+	glUniform1i(glGetUniformLocation(shader, "texture1"), 0);
+
 	glUniformMatrix4fv(glGetUniformLocation(shader, "model"), 1, GL_FALSE, glm::value_ptr(model));
 	glUniformMatrix4fv(glGetUniformLocation(shader, "view"), 1, GL_FALSE, glm::value_ptr(view));
 	glUniformMatrix4fv(glGetUniformLocation(shader, "projection"), 1, GL_FALSE, glm::value_ptr(projection));
@@ -328,7 +342,7 @@ void Planet::draw()
 
 	glUseProgram(shader);
 	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, texture);
+	glBindTexture(GL_TEXTURE_2D, texture1);
 	glBindVertexArray(VAO);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
 

@@ -1,5 +1,6 @@
 #include "camera.h"
 #include "planet.h"
+#include "global.h"
 
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
@@ -20,9 +21,6 @@ void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
 void mouse_cursor_callback(GLFWwindow* window, double xpos, double ypos);
 void mouse_scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
-
-Camera camera;
-Planet planet;
 
 int main()
 {
