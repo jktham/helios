@@ -5,6 +5,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 
 #include <vector>
+#include <string>
 
 class Planet
 {
@@ -12,8 +13,6 @@ public:
 	glm::vec3 position = glm::vec3(0.0f, 0.0f, 0.0f);
 	glm::vec3 rotation = glm::vec3(0.0f, 0.0f, 0.0f);
 	glm::mat4 model = glm::mat4(1.0f);
-	glm::mat4 view{};
-	glm::mat4 projection{};
 
 	float radius = 1.0f;
 	std::vector<float> vertices;
@@ -24,6 +23,9 @@ public:
 	GLuint EBO = 0;
 	GLuint shader = 0;
 	GLuint texture1 = 0;
+
+	std::string shader_name = "default_planet";
+	std::string texture_name = "test";
 
 	void compileShader();
 	void loadTextures();

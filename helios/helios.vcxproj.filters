@@ -39,6 +39,9 @@
     <ClCompile Include="src\global.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\solarSystem.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\stb_image.h">
@@ -53,13 +56,27 @@
     <ClInclude Include="src\global.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\solarSystem.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="src\shader.fs">
+    <None Include="src\default_planet.fs">
       <Filter>Shader FIles</Filter>
     </None>
-    <None Include="src\shader.vs">
+    <None Include="src\default_planet.vs">
       <Filter>Shader FIles</Filter>
     </None>
+    <None Include="src\default_sun.fs">
+      <Filter>Shader FIles</Filter>
+    </None>
+    <None Include="src\default_sun.vs">
+      <Filter>Shader FIles</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="res\textures\test.png">
+      <Filter>Resource Files</Filter>
+    </Image>
   </ItemGroup>
 </Project>

@@ -13,7 +13,7 @@ enum class Movement
 class Camera
 {
 public:
-	float speed = 1.0f;
+	float speed = 10.0f;
 	float sensitivity = 0.1f;
 	float fov = 90.0f;
 

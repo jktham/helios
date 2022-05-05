@@ -1,5 +1,6 @@
 #include "camera.h"
 #include "planet.h"
+#include "solarSystem.h"
 #include "global.h"
 
 #include <glad/glad.h>
@@ -61,11 +62,10 @@ int main()
 	float last_frame = 0.0f;
 	float delta_time = 0.0f;
 
-	planet.compileShader();
-	planet.loadTextures();
-	planet.generateBuffers();
-	planet.generateMesh();
-	planet.updateBuffers();
+	camera.position = glm::vec3(0.0f, -30.0f, 0.0f);
+
+	solarSystem.initializePlanets();
+	solarSystem.generatePlanets();
 
 	// render loop
 	while (!glfwWindowShouldClose(window))
@@ -86,14 +86,11 @@ int main()
 
 		processInputState(window, delta_time);
 
-		planet.updateModelMatrix();
 		camera.updateViewMatrix();
 		camera.updateProjectionMatrix();
 
-		planet.view = camera.view;
-		planet.projection = camera.projection;
-
-		planet.draw();
+		solarSystem.updatePlanets();
+		solarSystem.drawPlanets();
 
 		glfwSwapBuffers(window);
 		glfwPollEvents();

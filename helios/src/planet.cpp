@@ -9,6 +9,7 @@
 #include "stb_image.h"
 
 #include <vector>
+#include <string>
 #include <fstream>
 #include <iostream>
 #include <math.h>
@@ -18,7 +19,7 @@ void Planet::compileShader()
 	// vertex shader
 	const char* vert_source;
 
-	std::ifstream vert_file("src/shader.vs");
+	std::ifstream vert_file("src/" + shader_name + ".vs");
 	std::string vert_string((std::istreambuf_iterator<char>(vert_file)), std::istreambuf_iterator<char>());
 	vert_source = vert_string.c_str();
 
@@ -31,7 +32,7 @@ void Planet::compileShader()
 	// fragment shader
 	const char* frag_source;
 
-	std::ifstream frag_file("src/shader.fs");
+	std::ifstream frag_file("src/" + shader_name + ".fs");
 	std::string frag_string((std::istreambuf_iterator<char>(frag_file)), std::istreambuf_iterator<char>());
 	frag_source = frag_string.c_str();
 
@@ -62,7 +63,8 @@ void Planet::loadTextures()
 	glBindTexture(GL_TEXTURE_2D, texture1);
 
 	stbi_set_flip_vertically_on_load(true);
-	data = stbi_load("res/textures/test.png", &width, &height, &channels, 0);
+	std::string texture_path = "res/textures/" + texture_name + ".png";
+	data = stbi_load(texture_path.c_str(), &width, &height, &channels, 0);
 	if (data)
 	{
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
@@ -270,11 +272,11 @@ void Planet::generateMesh()
 void Planet::updateModelMatrix()
 {
 	model = glm::mat4(1.0f);
-	model = glm::scale(model, glm::vec3(radius));
+	model = glm::translate(model, position);
 	model = glm::rotate(model, rotation.x, glm::vec3(1.0f, 0.0f, 0.0f));
 	model = glm::rotate(model, rotation.y, glm::vec3(0.0f, 1.0f, 0.0f));
 	model = glm::rotate(model, rotation.z, glm::vec3(0.0f, 0.0f, 1.0f));
-	model = glm::translate(model, position);
+	model = glm::scale(model, glm::vec3(radius));
 }
 
 void Planet::updateBuffers()
@@ -322,8 +324,8 @@ void Planet::updateBuffers()
 void Planet::draw()
 {
 	glUseProgram(shader);
-	glUniform3f(glGetUniformLocation(shader, "light.position"), -100.0f, -100.0f, 100.0f);
-	glUniform3f(glGetUniformLocation(shader, "light.ambient"), 0.02f, 0.02f, 0.02f);
+	glUniform3f(glGetUniformLocation(shader, "light.position"), 0.0f, 0.0f, 0.0f);
+	glUniform3f(glGetUniformLocation(shader, "light.ambient"), 0.01f, 0.01f, 0.01f);
 	glUniform3f(glGetUniformLocation(shader, "light.diffuse"), 0.6f, 0.6f, 0.6f);
 	glUniform3f(glGetUniformLocation(shader, "light.specular"), 0.2f, 0.2f, 0.2f);
 
@@ -336,8 +338,8 @@ void Planet::draw()
 	glUniform1i(glGetUniformLocation(shader, "texture1"), 0);
 
 	glUniformMatrix4fv(glGetUniformLocation(shader, "model"), 1, GL_FALSE, glm::value_ptr(model));
-	glUniformMatrix4fv(glGetUniformLocation(shader, "view"), 1, GL_FALSE, glm::value_ptr(view));
-	glUniformMatrix4fv(glGetUniformLocation(shader, "projection"), 1, GL_FALSE, glm::value_ptr(projection));
+	glUniformMatrix4fv(glGetUniformLocation(shader, "view"), 1, GL_FALSE, glm::value_ptr(camera.view));
+	glUniformMatrix4fv(glGetUniformLocation(shader, "projection"), 1, GL_FALSE, glm::value_ptr(camera.projection));
 	glUseProgram(0);
 
 	glUseProgram(shader);

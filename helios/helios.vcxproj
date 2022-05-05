@@ -149,16 +149,23 @@
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\planet.cpp" />
     <ClCompile Include="src\stb_image.cpp" />
+    <ClCompile Include="src\solarSystem.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\camera.h" />
     <ClInclude Include="src\global.h" />
     <ClInclude Include="src\planet.h" />
     <ClInclude Include="src\stb_image.h" />
+    <ClInclude Include="src\solarSystem.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="src\shader.fs" />
-    <None Include="src\shader.vs" />
+    <None Include="src\default_planet.fs" />
+    <None Include="src\default_planet.vs" />
+    <None Include="src\default_sun.fs" />
+    <None Include="src\default_sun.vs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="res\textures\test.png" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

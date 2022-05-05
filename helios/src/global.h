@@ -1,7 +1,7 @@
 #pragma once
 
 #include "camera.h"
-#include "planet.h"
+#include "solarSystem.h"
 
 extern Camera camera;
-extern Planet planet;
+extern SolarSystem solarSystem;
