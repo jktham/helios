@@ -89,7 +89,7 @@ int main()
 		camera.updateViewMatrix();
 		camera.updateProjectionMatrix();
 
-		solarSystem.updatePlanets();
+		solarSystem.updatePlanets(delta_time);
 		solarSystem.drawPlanets();
 
 		glfwSwapBuffers(window);
@@ -173,6 +173,7 @@ void mouse_cursor_callback(GLFWwindow* window, double pos_x, double pos_y)
 
 void mouse_scroll_callback(GLFWwindow* window, double offset_x, double offset_y)
 {
+	camera.speed += offset_y * 10.0f;
 }
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height)

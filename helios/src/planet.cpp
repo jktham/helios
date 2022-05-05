@@ -81,13 +81,6 @@ void Planet::loadTextures()
 	glActiveTexture(0);
 }
 
-void Planet::generateBuffers()
-{
-	glGenVertexArrays(1, &VAO);
-	glGenBuffers(1, &VBO);
-	glGenBuffers(1, &EBO);
-}
-
 void Planet::generateMesh()
 {
 	int rings = 63;
@@ -269,14 +262,37 @@ void Planet::generateMesh()
 	//std::cout << index_count << "\n"; // rings * points * 2
 }
 
+void Planet::updatePosition(float delta_time)
+{
+	orbit_amount += orbit_speed * delta_time * solarSystem.time_scale;
+	position = orbit_center + glm::vec3(cos(orbit_amount) * orbit_radius, sin(orbit_amount) * orbit_radius, 0.0f);
+	// TODO: Consider orbit axis
+	// TODO: Update position of orbit center somehow (tie to position of parent body)
+}
+
+void Planet::updateRotation(float delta_time)
+{
+	rotation_amount += rotation_speed * delta_time * solarSystem.time_scale;
+}
+
 void Planet::updateModelMatrix()
 {
+	glm::vec3 up = glm::vec3(0.0f, 0.0f, 1.0f);
+	glm::vec3 orientation_axis = glm::cross(up, orientation);
+	float orientation_amount = atan2(glm::dot(glm::cross(orientation, up), glm::cross(orientation, up)), glm::dot(up, orientation));
+
 	model = glm::mat4(1.0f);
 	model = glm::translate(model, position);
-	model = glm::rotate(model, rotation.x, glm::vec3(1.0f, 0.0f, 0.0f));
-	model = glm::rotate(model, rotation.y, glm::vec3(0.0f, 1.0f, 0.0f));
-	model = glm::rotate(model, rotation.z, glm::vec3(0.0f, 0.0f, 1.0f));
+	model = glm::rotate(model, rotation_amount, rotation_axis);
+	if (orientation_axis.length() != 0.0f && orientation_amount != 0.0f) { model = glm::rotate(model, orientation_amount, orientation_axis); }
 	model = glm::scale(model, glm::vec3(radius));
+}
+
+void Planet::generateBuffers()
+{
+	glGenVertexArrays(1, &VAO);
+	glGenBuffers(1, &VBO);
+	glGenBuffers(1, &EBO);
 }
 
 void Planet::updateBuffers()

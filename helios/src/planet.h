@@ -6,12 +6,25 @@
 
 #include <vector>
 #include <string>
+#include <cmath>
 
 class Planet
 {
 public:
 	glm::vec3 position = glm::vec3(0.0f, 0.0f, 0.0f);
-	glm::vec3 rotation = glm::vec3(0.0f, 0.0f, 0.0f);
+
+	glm::vec3 orientation = glm::normalize(glm::vec3(0.0f, 0.0f, 1.0f));
+
+	glm::vec3 orbit_center = glm::vec3(0.0f, 0.0f, 0.0f);
+	glm::vec3 orbit_axis = glm::normalize(glm::vec3(0.0f, 0.0f, 1.0f));
+	float orbit_radius = 0.0f;
+	float orbit_speed = 0.0f;
+	float orbit_amount = 0.0f;
+
+	glm::vec3 rotation_axis = glm::normalize(glm::vec3(0.0f, 0.0f, 1.0f));
+	float rotation_speed = 0.0f;
+	float rotation_amount = 0.0f;
+
 	glm::mat4 model = glm::mat4(1.0f);
 
 	float radius = 1.0f;
@@ -29,9 +42,11 @@ public:
 
 	void compileShader();
 	void loadTextures();
-	void generateBuffers();
 	void generateMesh();
+	void updatePosition(float delta_time);
+	void updateRotation(float delta_time);
 	void updateModelMatrix();
+	void generateBuffers();
 	void updateBuffers();
 	void draw();
 };

@@ -18,7 +18,7 @@ void main()
 {
     gl_Position = projection * view * model * vec4(a_pos, 1.0f);
     frag_pos = vec3(model * vec4(a_pos, 1.0f));
-    normal = a_normal;
+    normal = vec3(model * vec4(a_normal, 0.0f));
     tex_coord = a_tex_coord;
     color = a_color;
 }
