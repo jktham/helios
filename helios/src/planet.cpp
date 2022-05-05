@@ -86,40 +86,58 @@ void Planet::generateBuffers()
 
 void Planet::generateMesh()
 {
-	int rings = 50;
-	int points = 50;
+	int rings = 63;
+	int points = 128;
 
-	float pi = 3.1415f;
-	float delta_theta = pi / (float)(rings + 1.0f);
-	float delta_phi = 2 * pi / (float)(points);
+	double pi = 3.1415926;
+	double delta_theta = pi / (float)(rings + 1);
+	double delta_phi = 2 * pi / (float)(points);
 
-	float theta = 0.0f;
-	float phi = 0.0f;
+	double theta = 0.0f;
+	double phi = 0.0f;
 
 	// generate vertices
 	std::vector<float> vertex;
 	int vertex_count = 0;
 
-	vertex = {
-		0.0f, 0.0f, 1.0f,
-		0.0f, 0.0f, 1.0f,
-		0.5f + atan2(0.0f, 0.0f) / (2.0f * pi), 0.5f + asin(-1.0f) / pi,
-		1.0f, 1.0f, 1.0f, 1.0f
-	};
-	vertices.insert(vertices.end(), vertex.begin(), vertex.end());
-	vertex_count += 1;
+	// north pole vertices
+	for (int i = 0; i < points; i++)
+	{
+		vertex = {
+			0.0f, 0.0f, 1.0f,
+			0.0f, 0.0f, 1.0f,
+			i * 1.0f / (float)points, 0.0f,
+			1.0f, 1.0f, 1.0f, 1.0f
+		};
+		vertices.insert(vertices.end(), vertex.begin(), vertex.end());
+		vertex_count += 1;
 
+		// north pole seam vertex
+		if (i == points - 1)
+		{
+			vertex = {
+				0.0f, 0.0f, 1.0f,
+				0.0f, 0.0f, 1.0f,
+				1.0f, 0.0f,
+				1.0f, 1.0f, 1.0f, 1.0f
+			};
+			vertices.insert(vertices.end(), vertex.begin(), vertex.end());
+			vertex_count += 1;
+		}
+	}
+
+	// body vertices
 	for (int r = 0; r < rings; r++)
 	{
+		phi = 0.0;
 		theta += delta_theta;
 		for (int p = 0; p < points; p++)
 		{
-			phi += delta_phi;
-			float x = sin(theta) * cos(phi);
-			float y = sin(theta) * sin(phi);
-			float z = cos(theta);
-			float u = 0.5f + atan2(-x, -y) / (2.0f * pi);
-			float v = 0.5f + asin(-z) / pi;
+			float x = (float)(sin(theta) * cos(phi));
+			float y = (float)(sin(theta) * sin(phi));
+			float z = (float)(cos(theta));
+			float u = (float)(phi / (2.0f * pi));
+			float v = (float)(theta / pi);
 
 			vertex = {
 				x, y, z,
@@ -129,22 +147,61 @@ void Planet::generateMesh()
 			};
 			vertices.insert(vertices.end(), vertex.begin(), vertex.end());
 			vertex_count += 1;
+
+			phi += delta_phi;
+
+			// body seam vertex
+			if (p == points - 1)
+			{
+				float x = (float)(sin(theta) * cos(phi));
+				float y = (float)(sin(theta) * sin(phi));
+				float z = (float)(cos(theta));
+				float u = (float)(phi / (2.0f * pi));
+				float v = (float)(theta / pi);
+
+				vertex = {
+					x, y, z,
+					x, y, z,
+					u, v,
+					1.0f, 1.0f, 1.0f, 1.0f
+				};
+				vertices.insert(vertices.end(), vertex.begin(), vertex.end());
+				vertex_count++;
+			}
 		}
 	}
 
-	vertex = {
-		0.0f, 0.0f, -1.0f,
-		0.0f, 0.0f, -1.0f,
-		0.5f + atan2(0.0f, 0.0f) / (2.0f * pi), 0.5f + asin(1.0f) / pi,
-		1.0f, 1.0f, 1.0f, 1.0f
-	};
-	vertices.insert(vertices.end(), vertex.begin(), vertex.end());
-	vertex_count += 1;
+	// south pole vertices
+	for (int i = 0; i < points; i++)
+	{
+		vertex = {
+			0.0f, 0.0f, -1.0f,
+			0.0f, 0.0f, -1.0f,
+			i * 1.0f / (float)points, 1.0f,
+			1.0f, 1.0f, 1.0f, 1.0f
+		};
+		vertices.insert(vertices.end(), vertex.begin(), vertex.end());
+		vertex_count++;
+
+		// south pole seam vertex
+		if (i == points - 1)
+		{
+			vertex = {
+				0.0f, 0.0f, -1.0f,
+				0.0f, 0.0f, -1.0f,
+				1.0f, 1.0f,
+				1.0f, 1.0f, 1.0f, 1.0f
+			};
+			vertices.insert(vertices.end(), vertex.begin(), vertex.end());
+			vertex_count++;
+		}
+	}
 
 	// generate indices
 	std::vector<unsigned int> index;
 	int index_count = 0;
 
+	// pole indices
 	//      A
 	//     . .
 	//    .   .
@@ -152,30 +209,31 @@ void Planet::generateMesh()
 	//  .       .
 	// B.........C
 
-	for (unsigned int i = 1; i < (unsigned int)points + 1; i++)
+	for (unsigned int i = 0; i < (unsigned int)points; i++)
 	{
-		unsigned int P = 0;
+		unsigned int P = i + 1;
 		unsigned int A = P;
-		unsigned int B = P + i;
-		unsigned int C = P + i % points + 1;
+		unsigned int B = P + points;
+		unsigned int C = P + points + 1;
 
 		index = { A, B, C };
 		indices.insert(indices.end(), index.begin(), index.end());
-		index_count += 1;
+		index_count++;
 	}
 
-	for (unsigned int i = 1; i < (unsigned int)points + 1; i++)
+	for (unsigned int i = 0; i < (unsigned int)points; i++)
 	{
-		unsigned int P = vertex_count - 1;
+		unsigned int P = vertex_count - i - 2;
 		unsigned int A = P;
-		unsigned int B = P - i;
-		unsigned int C = P - i % points - 1;
+		unsigned int B = P - points;
+		unsigned int C = P - points - 1;
 
 		index = { A, B, C };
 		indices.insert(indices.end(), index.begin(), index.end());
-		index_count += 1;
+		index_count++;
 	}
 
+	// body indices
 	// A..........D
 	// ..         .
 	// .   .      .
@@ -187,27 +245,24 @@ void Planet::generateMesh()
 	{
 		for (unsigned int p = 0; p < (unsigned int)points; p++)
 		{
-			unsigned int i = r * points + p + 1;
+			unsigned int i = r * (points + 1) + p + points + 1;
 
 			unsigned int A = i;
 			unsigned int D = i + 1;
-			unsigned int B = i + points;
-			unsigned int C = i + points + 1;
-
-			if (p == points - 1)
-			{
-				D = i - points + 1;
-				C = i + 1;
-			}
+			unsigned int B = i + points + 1;
+			unsigned int C = i + points + 2;
 
 			index = { A, B, C };
 			indices.insert(indices.end(), index.begin(), index.end());
-			index_count += 1;
+			index_count++;
 			index = { A, C, D };
 			indices.insert(indices.end(), index.begin(), index.end());
-			index_count += 1;
+			index_count++;
 		}
 	}
+
+	//std::cout << vertex_count << "\n"; // (rings + 2) * (points + 1)
+	//std::cout << index_count << "\n"; // rings * points * 2
 }
 
 void Planet::updateModelMatrix()

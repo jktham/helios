@@ -13,7 +13,7 @@ public:
 	glm::mat4 view{};
 	glm::mat4 projection{};
 
-	float radius = 10.0f;
+	float radius = 1.0f;
 	std::vector<float> vertices;
 	std::vector<unsigned int> indices;
 
