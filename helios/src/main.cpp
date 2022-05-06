@@ -1,6 +1,6 @@
 #include "camera.h"
 #include "planet.h"
-#include "solarSystem.h"
+#include "solarsystem.h"
 #include "global.h"
 
 #include <glad/glad.h>
