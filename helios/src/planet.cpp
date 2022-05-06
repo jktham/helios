@@ -264,15 +264,19 @@ void Planet::generateMesh()
 
 void Planet::updatePosition(float delta_time)
 {
-	orbit_amount += orbit_speed * delta_time * solarSystem.time_scale;
-	position = orbit_center + glm::vec3(cos(orbit_amount) * orbit_radius, sin(orbit_amount) * orbit_radius, 0.0f);
+	if (relative_orbit)
+	{
+		orbit_center = orbit_anchor->position;
+	}
+
+	orbit_offset += orbit_speed * delta_time * solarSystem.time_scale;
+	position = orbit_center + glm::vec3(cos(orbit_offset) * orbit_radius, sin(orbit_offset) * orbit_radius, 0.0f);
 	// TODO: Consider orbit axis
-	// TODO: Update position of orbit center somehow (tie to position of parent body)
 }
 
 void Planet::updateRotation(float delta_time)
 {
-	rotation_amount += rotation_speed * delta_time * solarSystem.time_scale;
+	rotation_offset += rotation_speed * delta_time * solarSystem.time_scale;
 }
 
 void Planet::updateModelMatrix()
@@ -283,7 +287,7 @@ void Planet::updateModelMatrix()
 
 	model = glm::mat4(1.0f);
 	model = glm::translate(model, position);
-	model = glm::rotate(model, rotation_amount, rotation_axis);
+	model = glm::rotate(model, rotation_offset, rotation_axis);
 	if (orientation_axis.length() != 0.0f && orientation_amount != 0.0f) { model = glm::rotate(model, orientation_amount, orientation_axis); }
 	model = glm::scale(model, glm::vec3(radius));
 }
