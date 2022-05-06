@@ -344,15 +344,17 @@ void Planet::updateBuffers()
 void Planet::draw()
 {
 	glUseProgram(shader);
-	glUniform3f(glGetUniformLocation(shader, "light.position"), 0.0f, 0.0f, 0.0f);
-	glUniform3f(glGetUniformLocation(shader, "light.ambient"), 0.01f, 0.01f, 0.01f);
-	glUniform3f(glGetUniformLocation(shader, "light.diffuse"), 0.6f, 0.6f, 0.6f);
-	glUniform3f(glGetUniformLocation(shader, "light.specular"), 0.2f, 0.2f, 0.2f);
+	glUniform3f(glGetUniformLocation(shader, "material.color"), material.color.r, material.color.g, material.color.b);
+	glUniform3f(glGetUniformLocation(shader, "material.ambient"), material.ambient.r, material.ambient.g, material.ambient.b);
+	glUniform3f(glGetUniformLocation(shader, "material.diffuse"), material.diffuse.r, material.diffuse.g, material.diffuse.b);
+	glUniform3f(glGetUniformLocation(shader, "material.specular"), material.specular.r, material.specular.g, material.specular.b);
+	glUniform1f(glGetUniformLocation(shader, "material.shininess"), material.shininess);
 
-	glUniform3f(glGetUniformLocation(shader, "material.ambient"), 1.0f, 1.0f, 1.0f);
-	glUniform3f(glGetUniformLocation(shader, "material.diffuse"), 1.0f, 1.0f, 1.0f);
-	glUniform3f(glGetUniformLocation(shader, "material.specular"), 1.0f, 1.0f, 1.0f);
-	glUniform1f(glGetUniformLocation(shader, "material.shininess"), 8.0f);
+	glUniform3f(glGetUniformLocation(shader, "light.position"), light_source->position.x, light_source->position.y, light_source->position.z);
+	glUniform3f(glGetUniformLocation(shader, "light.color"), light_source->light.color.r, light_source->light.color.g, light_source->light.color.b);
+	glUniform3f(glGetUniformLocation(shader, "light.ambient"), light_source->light.ambient.r, light_source->light.ambient.g, light_source->light.ambient.b);
+	glUniform3f(glGetUniformLocation(shader, "light.diffuse"), light_source->light.diffuse.r, light_source->light.diffuse.g, light_source->light.diffuse.b);
+	glUniform3f(glGetUniformLocation(shader, "light.specular"), light_source->light.specular.r, light_source->light.specular.g, light_source->light.specular.b);
 
 	glUniform3f(glGetUniformLocation(shader, "view_pos"), camera.position.x, camera.position.y, camera.position.z);
 	glUniform1i(glGetUniformLocation(shader, "texture1"), 0);

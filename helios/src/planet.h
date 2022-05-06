@@ -8,6 +8,23 @@
 #include <string>
 #include <cmath>
 
+struct Material
+{
+	glm::vec3 color = glm::vec3(1.0f);
+	glm::vec3 ambient = glm::vec3(1.0f);
+	glm::vec3 diffuse = glm::vec3(1.0f);
+	glm::vec3 specular = glm::vec3(1.0f);
+	float shininess = 8.0f;
+};
+
+struct Light
+{
+	glm::vec3 color = glm::vec3(1.0f);
+	glm::vec3 ambient = glm::vec3(0.01f);
+	glm::vec3 diffuse = glm::vec3(0.6f);
+	glm::vec3 specular = glm::vec3(0.2f);
+};
+
 class Planet
 {
 public:
@@ -29,6 +46,10 @@ public:
 	float orbit_radius = 0.0f;
 	float orbit_speed = 0.0f;
 	float orbit_offset = 0.0f;
+
+	Material material;
+	Light light;
+	Planet* light_source = this;
 
 	glm::mat4 model = glm::mat4(1.0f);
 
