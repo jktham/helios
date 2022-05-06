@@ -269,14 +269,28 @@ void Planet::updatePosition(float delta_time)
 		orbit_center = orbit_anchor->position;
 	}
 
-	orbit_offset += orbit_speed * delta_time * solarSystem.time_scale;
-	position = orbit_center + glm::vec3(cos(orbit_offset) * orbit_radius, sin(orbit_offset) * orbit_radius, 0.0f);
-	// TODO: Consider orbit axis
+	orbit_offset += orbit_speed * delta_time * solarsystem.time_scale;
+
+	glm::vec3 up = glm::vec3(0.0f, 0.0f, 1.0f);
+	glm::vec3 orbit_plane_i = glm::vec3(glm::cross(up, orbit_axis));
+	glm::vec3 orbit_plane_j = glm::vec3(glm::cross(orbit_plane_i, orbit_axis));
+
+	float orbit_x = cos(orbit_offset) * orbit_radius;
+	float orbit_y = sin(orbit_offset) * orbit_radius;
+
+	if (glm::length(orbit_plane_i) * glm::length(orbit_plane_j) != 0.0f)
+	{
+		position = orbit_center + orbit_x * glm::normalize(orbit_plane_i) + orbit_y * glm::normalize(orbit_plane_j);
+	}
+	else
+	{
+		position = orbit_center + glm::vec3(orbit_x, orbit_y, 0.0f);
+	}
 }
 
 void Planet::updateRotation(float delta_time)
 {
-	rotation_offset += rotation_speed * delta_time * solarSystem.time_scale;
+	rotation_offset += rotation_speed * delta_time * solarsystem.time_scale;
 }
 
 void Planet::updateModelMatrix()

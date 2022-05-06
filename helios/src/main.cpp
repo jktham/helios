@@ -64,8 +64,8 @@ int main()
 
 	camera.position = glm::vec3(0.0f, -30.0f, 0.0f);
 
-	solarSystem.initializePlanets();
-	solarSystem.generatePlanets();
+	solarsystem.initializePlanets();
+	solarsystem.generatePlanets();
 
 	// render loop
 	while (!glfwWindowShouldClose(window))
@@ -89,8 +89,8 @@ int main()
 		camera.updateViewMatrix();
 		camera.updateProjectionMatrix();
 
-		solarSystem.updatePlanets(delta_time);
-		solarSystem.drawPlanets();
+		solarsystem.updatePlanets(delta_time);
+		solarsystem.drawPlanets();
 
 		glfwSwapBuffers(window);
 		glfwPollEvents();
@@ -143,6 +143,24 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 		{
 			glPolygonMode(GL_FRONT_AND_BACK, GL_POINT);
 		}
+	}
+
+	if (key == GLFW_KEY_LEFT_SHIFT && action == GLFW_PRESS)
+	{
+		camera.speed *= 10.0f;
+	}
+	if (key == GLFW_KEY_LEFT_SHIFT && action == GLFW_RELEASE)
+	{
+		camera.speed /= 10.0f;
+	}
+
+	if (key == GLFW_KEY_LEFT && action == GLFW_PRESS)
+	{
+		solarsystem.time_scale -= 0.5f;
+	}
+	if (key == GLFW_KEY_RIGHT && action == GLFW_PRESS)
+	{
+		solarsystem.time_scale += 0.5f;
 	}
 }
 

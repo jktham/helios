@@ -1,4 +1,4 @@
 #include "global.h"
 
 Camera camera;
-SolarSystem solarSystem;
+Solarsystem solarsystem;

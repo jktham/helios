@@ -4,11 +4,11 @@
 
 #include <vector>
 
-class SolarSystem
+class Solarsystem
 {
 public:
 	std::vector<Planet*> planets;
-	float time_scale = 0.5f;
+	float time_scale = 1.0f;
 
 	void initializePlanets();
 	void generatePlanets();

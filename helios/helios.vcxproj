@@ -149,14 +149,14 @@
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\planet.cpp" />
     <ClCompile Include="src\stb_image.cpp" />
-    <ClCompile Include="src\solarSystem.cpp" />
+    <ClCompile Include="src\solarsystem.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\camera.h" />
     <ClInclude Include="src\global.h" />
     <ClInclude Include="src\planet.h" />
     <ClInclude Include="src\stb_image.h" />
-    <ClInclude Include="src\solarSystem.h" />
+    <ClInclude Include="src\solarsystem.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="src\default_planet.fs" />
