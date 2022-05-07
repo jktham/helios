@@ -62,7 +62,7 @@ int main()
 	float last_frame = 0.0f;
 	float delta_time = 0.0f;
 
-	camera.position = glm::vec3(0.0f, -30.0f, 0.0f);
+	camera.position = glm::vec3(-40.0f, 0.0f, 0.0f);
 
 	solarsystem.initializePlanets();
 	solarsystem.generatePlanets();
@@ -161,6 +161,11 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 	if (key == GLFW_KEY_RIGHT && action == GLFW_PRESS)
 	{
 		solarsystem.time_scale += 0.5f;
+	}
+
+	if (key == GLFW_KEY_SPACE && action == GLFW_PRESS)
+	{
+		solarsystem.paused = !solarsystem.paused;
 	}
 }
 

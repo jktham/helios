@@ -59,6 +59,8 @@ void Solarsystem::initializePlanets()
 	planets[4]->orbit_speed = 2.0f;
 	planets[4]->orbit_offset = 2.0f * 3.14f / 2.0f;
 	planets[4]->light_source = planets[0];
+	planets[4]->rotation_axis = glm::normalize(glm::vec3(1.0f, 0.0f, 1.0f));
+	planets[4]->pole_axis = glm::normalize(glm::vec3(1.0f, 0.0f, 1.0f));
 }
 
 void Solarsystem::generatePlanets()

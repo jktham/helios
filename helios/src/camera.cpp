@@ -40,11 +40,11 @@ void Camera::processMouseMovement(float offset_x, float offset_y)
 
 void Camera::updateCameraVectors()
 {
-	glm::vec3 front_dir{};
-	front_dir.x = sin(glm::radians(yaw)) * cos(glm::radians(pitch));
-	front_dir.y = cos(glm::radians(yaw)) * cos(glm::radians(pitch));
-	front_dir.z = sin(glm::radians(pitch));
-	front = glm::normalize(front_dir);
+	glm::vec3 view_dir{};
+	view_dir.x = cos(glm::radians(-yaw)) * cos(glm::radians(pitch));
+	view_dir.y = sin(glm::radians(-yaw)) * cos(glm::radians(pitch));
+	view_dir.z = sin(glm::radians(pitch));
+	front = glm::normalize(view_dir);
 
 	right = glm::normalize(glm::cross(front, glm::vec3(0.0f, 0.0f, 1.0f)));
 	up = glm::normalize(glm::cross(right, front));

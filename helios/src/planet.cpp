@@ -269,16 +269,16 @@ void Planet::updatePosition(float delta_time)
 		orbit_center = orbit_anchor->position;
 	}
 
-	orbit_offset += orbit_speed * delta_time * solarsystem.time_scale;
+	orbit_offset += orbit_speed * delta_time * solarsystem.time_scale * !solarsystem.paused;
 
 	glm::vec3 up = glm::vec3(0.0f, 0.0f, 1.0f);
 	glm::vec3 orbit_plane_i = glm::vec3(glm::cross(up, orbit_axis));
-	glm::vec3 orbit_plane_j = glm::vec3(glm::cross(orbit_plane_i, orbit_axis));
+	glm::vec3 orbit_plane_j = glm::vec3(glm::cross(orbit_axis, orbit_plane_i));
 
 	float orbit_x = cos(orbit_offset) * orbit_radius;
 	float orbit_y = sin(orbit_offset) * orbit_radius;
 
-	if (glm::length(orbit_plane_i) * glm::length(orbit_plane_j) != 0.0f)
+	if ((glm::length(orbit_plane_i) != 0.0f) && (glm::length(orbit_plane_j) != 0.0f))
 	{
 		position = orbit_center + orbit_x * glm::normalize(orbit_plane_i) + orbit_y * glm::normalize(orbit_plane_j);
 	}
@@ -290,19 +290,23 @@ void Planet::updatePosition(float delta_time)
 
 void Planet::updateRotation(float delta_time)
 {
-	rotation_offset += rotation_speed * delta_time * solarsystem.time_scale;
+	rotation_offset += rotation_speed * delta_time * solarsystem.time_scale * !solarsystem.paused;
 }
 
 void Planet::updateModelMatrix()
 {
 	glm::vec3 up = glm::vec3(0.0f, 0.0f, 1.0f);
-	glm::vec3 orientation_axis = glm::cross(up, orientation);
-	float orientation_amount = atan2(glm::dot(glm::cross(orientation, up), glm::cross(orientation, up)), glm::dot(up, orientation));
+	glm::vec3 pole_plane_i = glm::cross(up, pole_axis);
+	glm::vec3 pole_plane_j = glm::cross(pole_axis, pole_plane_i);
+
+	float pole_rotation_offset = acos(glm::dot(glm::normalize(up), glm::normalize(pole_axis)));
+	glm::vec3 pole_rotation_axis = glm::cross(glm::normalize(up), glm::normalize(pole_axis));
 
 	model = glm::mat4(1.0f);
 	model = glm::translate(model, position);
 	model = glm::rotate(model, rotation_offset, rotation_axis);
-	if (orientation_axis.length() != 0.0f && orientation_amount != 0.0f) { model = glm::rotate(model, orientation_amount, orientation_axis); }
+	if (glm::length(pole_rotation_axis) != 0.0f)
+		model = glm::rotate(model, pole_rotation_offset, glm::normalize(pole_rotation_axis));
 	model = glm::scale(model, glm::vec3(radius));
 }
 

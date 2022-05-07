@@ -34,7 +34,8 @@ public:
 	unsigned long int mass = 0;
 	std::string name = "";
 
-	glm::vec3 orientation = glm::normalize(glm::vec3(0.0f, 0.0f, 1.0f));
+	glm::vec3 pole_axis = glm::normalize(glm::vec3(0.0f, 0.0f, 1.0f));
+
 	glm::vec3 rotation_axis = glm::normalize(glm::vec3(0.0f, 0.0f, 1.0f));
 	float rotation_speed = 0.0f;
 	float rotation_offset = 0.0f;
