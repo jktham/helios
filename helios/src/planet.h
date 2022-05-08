@@ -52,19 +52,34 @@ public:
 	Light light;
 	Planet* light_source = this;
 
-	glm::mat4 model = glm::mat4(1.0f);
+	glm::mat4 body_model = glm::mat4(1.0f);
+	glm::mat4 orbit_model = glm::mat4(1.0f);
+	glm::mat4 axis_model = glm::mat4(1.0f);
 
-	std::vector<float> vertices;
-	std::vector<unsigned int> indices;
+	std::vector<float> body_vertices;
+	std::vector<unsigned int> body_indices;
 
-	GLuint VAO = 0;
-	GLuint VBO = 0;
-	GLuint EBO = 0;
-	GLuint shader = 0;
+	std::vector<float> orbit_vertices;
+	std::vector<float> axis_vertices;
+
+	GLuint body_VAO = 0;
+	GLuint body_VBO = 0;
+	GLuint body_EBO = 0;
+	GLuint body_shader = 0;
 	GLuint texture1 = 0;
 
-	std::string shader_name = "default_planet";
-	std::string texture_name = "test";
+	GLuint orbit_VAO = 0;
+	GLuint orbit_VBO = 0;
+	GLuint orbit_shader = 0;
+	GLuint axis_VAO = 0;
+	GLuint axis_VBO = 0;
+	GLuint axis_shader = 0;
+
+	std::string body_shader_path = "src/default_body";
+	std::string texture_path = "res/textures/test.png";
+
+	std::string orbit_shader_path = "src/default_orbit";
+	std::string axis_shader_path = "src/default_axis";
 
 	void compileShader();
 	void loadTextures();
@@ -74,5 +89,7 @@ public:
 	void updateModelMatrix();
 	void generateBuffers();
 	void updateBuffers();
-	void draw();
+	void drawBody();
+	void drawOrbit();
+	void drawAxis();
 };

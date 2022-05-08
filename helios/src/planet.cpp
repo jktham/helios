@@ -16,41 +16,113 @@
 
 void Planet::compileShader()
 {
-	// vertex shader
-	const char* vert_source;
+	// body vertex shader
+	const char* body_vert_source;
 
-	std::ifstream vert_file("src/" + shader_name + ".vs");
-	std::string vert_string((std::istreambuf_iterator<char>(vert_file)), std::istreambuf_iterator<char>());
-	vert_source = vert_string.c_str();
+	std::ifstream body_vert_file(body_shader_path + ".vs");
+	std::string body_vert_string((std::istreambuf_iterator<char>(body_vert_file)), std::istreambuf_iterator<char>());
+	body_vert_source = body_vert_string.c_str();
 
-	unsigned int vert_shader;
-	vert_shader = glCreateShader(GL_VERTEX_SHADER);
+	unsigned int body_vert_shader;
+	body_vert_shader = glCreateShader(GL_VERTEX_SHADER);
 
-	glShaderSource(vert_shader, 1, &vert_source, NULL);
-	glCompileShader(vert_shader);
+	glShaderSource(body_vert_shader, 1, &body_vert_source, NULL);
+	glCompileShader(body_vert_shader);
 
-	// fragment shader
-	const char* frag_source;
+	// body fragment shader
+	const char* body_frag_source;
 
-	std::ifstream frag_file("src/" + shader_name + ".fs");
-	std::string frag_string((std::istreambuf_iterator<char>(frag_file)), std::istreambuf_iterator<char>());
-	frag_source = frag_string.c_str();
+	std::ifstream body_frag_file(body_shader_path + ".fs");
+	std::string body_frag_string((std::istreambuf_iterator<char>(body_frag_file)), std::istreambuf_iterator<char>());
+	body_frag_source = body_frag_string.c_str();
 
-	unsigned int frag_shader;
-	frag_shader = glCreateShader(GL_FRAGMENT_SHADER);
+	unsigned int body_frag_shader;
+	body_frag_shader = glCreateShader(GL_FRAGMENT_SHADER);
 
-	glShaderSource(frag_shader, 1, &frag_source, NULL);
-	glCompileShader(frag_shader);
+	glShaderSource(body_frag_shader, 1, &body_frag_source, NULL);
+	glCompileShader(body_frag_shader);
 
-	// shader program
-	shader = glCreateProgram();
+	// body shader program
+	body_shader = glCreateProgram();
 
-	glAttachShader(shader, vert_shader);
-	glAttachShader(shader, frag_shader);
-	glLinkProgram(shader);
+	glAttachShader(body_shader, body_vert_shader);
+	glAttachShader(body_shader, body_frag_shader);
+	glLinkProgram(body_shader);
 
-	glDeleteShader(vert_shader);
-	glDeleteShader(frag_shader);
+	glDeleteShader(body_vert_shader);
+	glDeleteShader(body_frag_shader);
+
+	// orbit vertex shader
+	const char* orbit_vert_source;
+
+	std::ifstream orbit_vert_file(orbit_shader_path + ".vs");
+	std::string orbit_vert_string((std::istreambuf_iterator<char>(orbit_vert_file)), std::istreambuf_iterator<char>());
+	orbit_vert_source = orbit_vert_string.c_str();
+
+	unsigned int orbit_vert_shader;
+	orbit_vert_shader = glCreateShader(GL_VERTEX_SHADER);
+
+	glShaderSource(orbit_vert_shader, 1, &orbit_vert_source, NULL);
+	glCompileShader(orbit_vert_shader);
+
+	// orbit fragment shader
+	const char* orbit_frag_source;
+
+	std::ifstream orbit_frag_file(orbit_shader_path + ".fs");
+	std::string orbit_frag_string((std::istreambuf_iterator<char>(orbit_frag_file)), std::istreambuf_iterator<char>());
+	orbit_frag_source = orbit_frag_string.c_str();
+
+	unsigned int orbit_frag_shader;
+	orbit_frag_shader = glCreateShader(GL_FRAGMENT_SHADER);
+
+	glShaderSource(orbit_frag_shader, 1, &orbit_frag_source, NULL);
+	glCompileShader(orbit_frag_shader);
+
+	// orbit shader program
+	orbit_shader = glCreateProgram();
+
+	glAttachShader(orbit_shader, orbit_vert_shader);
+	glAttachShader(orbit_shader, orbit_frag_shader);
+	glLinkProgram(orbit_shader);
+
+	glDeleteShader(orbit_vert_shader);
+	glDeleteShader(orbit_frag_shader);
+
+	// axis vertex shader
+	const char* axis_vert_source;
+
+	std::ifstream axis_vert_file(axis_shader_path + ".vs");
+	std::string axis_vert_string((std::istreambuf_iterator<char>(axis_vert_file)), std::istreambuf_iterator<char>());
+	axis_vert_source = axis_vert_string.c_str();
+
+	unsigned int axis_vert_shader;
+	axis_vert_shader = glCreateShader(GL_VERTEX_SHADER);
+
+	glShaderSource(axis_vert_shader, 1, &axis_vert_source, NULL);
+	glCompileShader(axis_vert_shader);
+
+	// axis fragment shader
+	const char* axis_frag_source;
+
+	std::ifstream axis_frag_file(axis_shader_path + ".fs");
+	std::string axis_frag_string((std::istreambuf_iterator<char>(axis_frag_file)), std::istreambuf_iterator<char>());
+	axis_frag_source = axis_frag_string.c_str();
+
+	unsigned int axis_frag_shader;
+	axis_frag_shader = glCreateShader(GL_FRAGMENT_SHADER);
+
+	glShaderSource(axis_frag_shader, 1, &axis_frag_source, NULL);
+	glCompileShader(axis_frag_shader);
+
+	// axis shader program
+	axis_shader = glCreateProgram();
+
+	glAttachShader(axis_shader, axis_vert_shader);
+	glAttachShader(axis_shader, axis_frag_shader);
+	glLinkProgram(axis_shader);
+
+	glDeleteShader(axis_vert_shader);
+	glDeleteShader(axis_frag_shader);
 }
 
 void Planet::loadTextures()
@@ -63,7 +135,6 @@ void Planet::loadTextures()
 	glBindTexture(GL_TEXTURE_2D, texture1);
 
 	stbi_set_flip_vertically_on_load(true);
-	std::string texture_path = "res/textures/" + texture_name + ".png";
 	data = stbi_load(texture_path.c_str(), &width, &height, &channels, 0);
 	if (data)
 	{
@@ -94,7 +165,6 @@ void Planet::generateMesh()
 
 	// generate vertices
 	std::vector<float> vertex;
-	int vertex_count = 0;
 
 	// north pole vertices
 	for (int i = 0; i < points; i++)
@@ -105,8 +175,7 @@ void Planet::generateMesh()
 			i * 1.0f / (float)points, 0.0f,
 			1.0f, 1.0f, 1.0f, 1.0f
 		};
-		vertices.insert(vertices.end(), vertex.begin(), vertex.end());
-		vertex_count += 1;
+		body_vertices.insert(body_vertices.end(), vertex.begin(), vertex.end());
 
 		// north pole seam vertex
 		if (i == points - 1)
@@ -117,8 +186,7 @@ void Planet::generateMesh()
 				1.0f, 0.0f,
 				1.0f, 1.0f, 1.0f, 1.0f
 			};
-			vertices.insert(vertices.end(), vertex.begin(), vertex.end());
-			vertex_count += 1;
+			body_vertices.insert(body_vertices.end(), vertex.begin(), vertex.end());
 		}
 	}
 
@@ -141,8 +209,7 @@ void Planet::generateMesh()
 				u, v,
 				1.0f, 1.0f, 1.0f, 1.0f
 			};
-			vertices.insert(vertices.end(), vertex.begin(), vertex.end());
-			vertex_count += 1;
+			body_vertices.insert(body_vertices.end(), vertex.begin(), vertex.end());
 
 			phi += delta_phi;
 
@@ -161,8 +228,7 @@ void Planet::generateMesh()
 					u, v,
 					1.0f, 1.0f, 1.0f, 1.0f
 				};
-				vertices.insert(vertices.end(), vertex.begin(), vertex.end());
-				vertex_count++;
+				body_vertices.insert(body_vertices.end(), vertex.begin(), vertex.end());
 			}
 		}
 	}
@@ -176,8 +242,7 @@ void Planet::generateMesh()
 			i * 1.0f / (float)points, 1.0f,
 			1.0f, 1.0f, 1.0f, 1.0f
 		};
-		vertices.insert(vertices.end(), vertex.begin(), vertex.end());
-		vertex_count++;
+		body_vertices.insert(body_vertices.end(), vertex.begin(), vertex.end());
 
 		// south pole seam vertex
 		if (i == points - 1)
@@ -188,14 +253,12 @@ void Planet::generateMesh()
 				1.0f, 1.0f,
 				1.0f, 1.0f, 1.0f, 1.0f
 			};
-			vertices.insert(vertices.end(), vertex.begin(), vertex.end());
-			vertex_count++;
+			body_vertices.insert(body_vertices.end(), vertex.begin(), vertex.end());
 		}
 	}
 
-	// generate indices
+	// generate body_indices
 	std::vector<unsigned int> index;
-	int index_count = 0;
 
 	// pole indices
 	//      A
@@ -213,20 +276,18 @@ void Planet::generateMesh()
 		unsigned int C = P + points + 1;
 
 		index = { A, B, C };
-		indices.insert(indices.end(), index.begin(), index.end());
-		index_count++;
+		body_indices.insert(body_indices.end(), index.begin(), index.end());
 	}
 
 	for (unsigned int i = 0; i < (unsigned int)points; i++)
 	{
-		unsigned int P = vertex_count - i - 2;
+		unsigned int P = (int)body_vertices.size() / 12 - i - 2;
 		unsigned int A = P;
 		unsigned int B = P - points;
 		unsigned int C = P - points - 1;
 
 		index = { A, B, C };
-		indices.insert(indices.end(), index.begin(), index.end());
-		index_count++;
+		body_indices.insert(body_indices.end(), index.begin(), index.end());
 	}
 
 	// body indices
@@ -249,16 +310,36 @@ void Planet::generateMesh()
 			unsigned int C = i + points + 2;
 
 			index = { A, B, C };
-			indices.insert(indices.end(), index.begin(), index.end());
-			index_count++;
+			body_indices.insert(body_indices.end(), index.begin(), index.end());
 			index = { A, C, D };
-			indices.insert(indices.end(), index.begin(), index.end());
-			index_count++;
+			body_indices.insert(body_indices.end(), index.begin(), index.end());
 		}
 	}
 
-	//std::cout << vertex_count << "\n"; // (rings + 2) * (points + 1)
-	//std::cout << index_count << "\n"; // rings * points * 2
+	// orbit vertices
+	points = 360;
+	delta_phi = 2 * pi / (float)points;
+	phi = 0.0f;
+
+	for (int i = 0; i < points; i++)
+	{
+		vertex = {
+			cos((float)phi), sin((float)phi), 0.0f
+		};
+		orbit_vertices.insert(orbit_vertices.end(), vertex.begin(), vertex.end());
+		phi += delta_phi;
+	}
+
+	// axis vertices
+	float length = 1.5f;
+	vertex = {
+			0.0f, 0.0f, length
+	};
+	axis_vertices.insert(axis_vertices.end(), vertex.begin(), vertex.end());
+	vertex = {
+			0.0f, 0.0f, -length
+	};
+	axis_vertices.insert(axis_vertices.end(), vertex.begin(), vertex.end());
 }
 
 void Planet::updatePosition(float delta_time)
@@ -301,96 +382,182 @@ void Planet::updateModelMatrix()
 	float pole_rotation_offset = acos(glm::dot(glm::normalize(up), glm::normalize(pole_axis)));
 	glm::vec3 pole_rotation_axis = glm::cross(glm::normalize(up), glm::normalize(pole_axis));
 
-	model = glm::mat4(1.0f);
-	model = glm::translate(model, position);
-	model = glm::rotate(model, rotation_offset, rotation_axis);
+	body_model = glm::mat4(1.0f);
+	body_model = glm::translate(body_model, position);
+	body_model = glm::rotate(body_model, rotation_offset, rotation_axis);
 	if (glm::length(pole_rotation_axis) != 0.0f)
-		model = glm::rotate(model, pole_rotation_offset, glm::normalize(pole_rotation_axis));
-	model = glm::scale(model, glm::vec3(radius));
+		body_model = glm::rotate(body_model, pole_rotation_offset, glm::normalize(pole_rotation_axis));
+	body_model = glm::scale(body_model, glm::vec3(radius));
+
+	float orbit_rotation_offset = acos(glm::dot(glm::normalize(up), glm::normalize(orbit_axis)));
+	glm::vec3 orbit_rotation_axis = glm::cross(glm::normalize(up), glm::normalize(orbit_axis));
+
+	orbit_model = glm::mat4(1.0f);
+	orbit_model = glm::translate(orbit_model, orbit_center);
+	if (glm::length(orbit_rotation_axis) != 0.0f)
+		orbit_model = glm::rotate(orbit_model, orbit_rotation_offset, glm::normalize(orbit_rotation_axis));
+	orbit_model = glm::scale(orbit_model, glm::vec3(orbit_radius));
+
+	axis_model = glm::mat4(1.0f);
+	axis_model = glm::translate(axis_model, position);
+	if (glm::length(pole_rotation_offset) != 0.0f)
+		axis_model = glm::rotate(axis_model, pole_rotation_offset, glm::normalize(pole_rotation_axis));
+	axis_model = glm::scale(axis_model, glm::vec3(radius));
 }
 
 void Planet::generateBuffers()
 {
-	glGenVertexArrays(1, &VAO);
-	glGenBuffers(1, &VBO);
-	glGenBuffers(1, &EBO);
+	glGenVertexArrays(1, &body_VAO);
+	glGenBuffers(1, &body_VBO);
+	glGenBuffers(1, &body_EBO);
+
+	glGenVertexArrays(1, &orbit_VAO);
+	glGenBuffers(1, &orbit_VBO);
+	glGenVertexArrays(1, &axis_VAO);
+	glGenBuffers(1, &axis_VBO);
 }
 
 void Planet::updateBuffers()
 {
 	// vertex array object
-	glBindVertexArray(VAO);
+	glBindVertexArray(body_VAO);
 
 	// vertex buffer object
-	glBindBuffer(GL_ARRAY_BUFFER, VBO);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * vertices.size(), vertices.data(), GL_STATIC_DRAW);
+	glBindBuffer(GL_ARRAY_BUFFER, body_VBO);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * body_vertices.size(), body_vertices.data(), GL_STATIC_DRAW);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 
 	// vertex attribute (position)
-	glBindBuffer(GL_ARRAY_BUFFER, VBO);
+	glBindBuffer(GL_ARRAY_BUFFER, body_VBO);
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 12 * sizeof(float), (void*)(0 * sizeof(float)));
 	glEnableVertexAttribArray(0);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 
 	// vertex attribute (normal)
-	glBindBuffer(GL_ARRAY_BUFFER, VBO);
+	glBindBuffer(GL_ARRAY_BUFFER, body_VBO);
 	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 12 * sizeof(float), (void*)(3 * sizeof(float)));
 	glEnableVertexAttribArray(1);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 
 	// vertex attribute (texcoord)
-	glBindBuffer(GL_ARRAY_BUFFER, VBO);
+	glBindBuffer(GL_ARRAY_BUFFER, body_VBO);
 	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 12 * sizeof(float), (void*)(6 * sizeof(float)));
 	glEnableVertexAttribArray(2);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 
 	// vertex attribute (color)
-	glBindBuffer(GL_ARRAY_BUFFER, VBO);
+	glBindBuffer(GL_ARRAY_BUFFER, body_VBO);
 	glVertexAttribPointer(3, 4, GL_FLOAT, GL_FALSE, 12 * sizeof(float), (void*)(8 * sizeof(float)));
 	glEnableVertexAttribArray(3);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 
 	// element index buffer
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(unsigned int), &indices[0], GL_STATIC_DRAW);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, body_EBO);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, body_indices.size() * sizeof(unsigned int), &body_indices[0], GL_STATIC_DRAW);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+
+	glBindVertexArray(0);
+
+	// vertex array object
+	glBindVertexArray(orbit_VAO);
+
+	// vertex buffer object
+	glBindBuffer(GL_ARRAY_BUFFER, orbit_VBO);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * orbit_vertices.size(), orbit_vertices.data(), GL_STATIC_DRAW);
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+	// vertex attribute (position)
+	glBindBuffer(GL_ARRAY_BUFFER, orbit_VBO);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)(0 * sizeof(float)));
+	glEnableVertexAttribArray(0);
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+	glBindVertexArray(0);
+
+	// vertex array object
+	glBindVertexArray(axis_VAO);
+
+	// vertex buffer object
+	glBindBuffer(GL_ARRAY_BUFFER, axis_VBO);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * axis_vertices.size(), axis_vertices.data(), GL_STATIC_DRAW);
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+	// vertex attribute (position)
+	glBindBuffer(GL_ARRAY_BUFFER, axis_VBO);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)(0 * sizeof(float)));
+	glEnableVertexAttribArray(0);
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
 
 	glBindVertexArray(0);
 }
 
-void Planet::draw()
+void Planet::drawBody()
 {
-	glUseProgram(shader);
-	glUniform3f(glGetUniformLocation(shader, "material.color"), material.color.r, material.color.g, material.color.b);
-	glUniform3f(glGetUniformLocation(shader, "material.ambient"), material.ambient.r, material.ambient.g, material.ambient.b);
-	glUniform3f(glGetUniformLocation(shader, "material.diffuse"), material.diffuse.r, material.diffuse.g, material.diffuse.b);
-	glUniform3f(glGetUniformLocation(shader, "material.specular"), material.specular.r, material.specular.g, material.specular.b);
-	glUniform1f(glGetUniformLocation(shader, "material.shininess"), material.shininess);
+	glUseProgram(body_shader);
+	glUniform3f(glGetUniformLocation(body_shader, "material.color"), material.color.r, material.color.g, material.color.b);
+	glUniform3f(glGetUniformLocation(body_shader, "material.ambient"), material.ambient.r, material.ambient.g, material.ambient.b);
+	glUniform3f(glGetUniformLocation(body_shader, "material.diffuse"), material.diffuse.r, material.diffuse.g, material.diffuse.b);
+	glUniform3f(glGetUniformLocation(body_shader, "material.specular"), material.specular.r, material.specular.g, material.specular.b);
+	glUniform1f(glGetUniformLocation(body_shader, "material.shininess"), material.shininess);
 
-	glUniform3f(glGetUniformLocation(shader, "light.position"), light_source->position.x, light_source->position.y, light_source->position.z);
-	glUniform3f(glGetUniformLocation(shader, "light.color"), light_source->light.color.r, light_source->light.color.g, light_source->light.color.b);
-	glUniform3f(glGetUniformLocation(shader, "light.ambient"), light_source->light.ambient.r, light_source->light.ambient.g, light_source->light.ambient.b);
-	glUniform3f(glGetUniformLocation(shader, "light.diffuse"), light_source->light.diffuse.r, light_source->light.diffuse.g, light_source->light.diffuse.b);
-	glUniform3f(glGetUniformLocation(shader, "light.specular"), light_source->light.specular.r, light_source->light.specular.g, light_source->light.specular.b);
+	glUniform3f(glGetUniformLocation(body_shader, "light.position"), light_source->position.x, light_source->position.y, light_source->position.z);
+	glUniform3f(glGetUniformLocation(body_shader, "light.color"), light_source->light.color.r, light_source->light.color.g, light_source->light.color.b);
+	glUniform3f(glGetUniformLocation(body_shader, "light.ambient"), light_source->light.ambient.r, light_source->light.ambient.g, light_source->light.ambient.b);
+	glUniform3f(glGetUniformLocation(body_shader, "light.diffuse"), light_source->light.diffuse.r, light_source->light.diffuse.g, light_source->light.diffuse.b);
+	glUniform3f(glGetUniformLocation(body_shader, "light.specular"), light_source->light.specular.r, light_source->light.specular.g, light_source->light.specular.b);
 
-	glUniform3f(glGetUniformLocation(shader, "view_pos"), camera.position.x, camera.position.y, camera.position.z);
-	glUniform1i(glGetUniformLocation(shader, "texture1"), 0);
+	glUniform3f(glGetUniformLocation(body_shader, "view_pos"), camera.position.x, camera.position.y, camera.position.z);
+	glUniform1i(glGetUniformLocation(body_shader, "texture1"), 0);
 
-	glUniformMatrix4fv(glGetUniformLocation(shader, "model"), 1, GL_FALSE, glm::value_ptr(model));
-	glUniformMatrix4fv(glGetUniformLocation(shader, "view"), 1, GL_FALSE, glm::value_ptr(camera.view));
-	glUniformMatrix4fv(glGetUniformLocation(shader, "projection"), 1, GL_FALSE, glm::value_ptr(camera.projection));
+	glUniformMatrix4fv(glGetUniformLocation(body_shader, "model"), 1, GL_FALSE, glm::value_ptr(body_model));
+	glUniformMatrix4fv(glGetUniformLocation(body_shader, "view"), 1, GL_FALSE, glm::value_ptr(camera.view));
+	glUniformMatrix4fv(glGetUniformLocation(body_shader, "projection"), 1, GL_FALSE, glm::value_ptr(camera.projection));
 	glUseProgram(0);
 
-	glUseProgram(shader);
+	glUseProgram(body_shader);
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, texture1);
-	glBindVertexArray(VAO);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+	glBindVertexArray(body_VAO);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, body_EBO);
 
-	glDrawElements(GL_TRIANGLES, (GLsizei)indices.size(), GL_UNSIGNED_INT, (void*)0);
+	glDrawElements(GL_TRIANGLES, (GLsizei)body_indices.size(), GL_UNSIGNED_INT, (void*)0);
 
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 	glBindVertexArray(0);
 	glBindTexture(GL_TEXTURE_2D, 0);
+	glUseProgram(0);
+}
+
+void Planet::drawOrbit()
+{
+	glUseProgram(orbit_shader);
+	glUniformMatrix4fv(glGetUniformLocation(orbit_shader, "model"), 1, GL_FALSE, glm::value_ptr(orbit_model));
+	glUniformMatrix4fv(glGetUniformLocation(orbit_shader, "view"), 1, GL_FALSE, glm::value_ptr(camera.view));
+	glUniformMatrix4fv(glGetUniformLocation(orbit_shader, "projection"), 1, GL_FALSE, glm::value_ptr(camera.projection));
+	glUseProgram(0);
+
+	glUseProgram(orbit_shader);
+	glBindVertexArray(orbit_VAO);
+
+	glDrawArrays(GL_LINE_LOOP, 0, (GLsizei)orbit_vertices.size() / 3);
+
+	glBindVertexArray(0);
+	glUseProgram(0);
+}
+
+void Planet::drawAxis()
+{
+	glUseProgram(axis_shader);
+	glUniformMatrix4fv(glGetUniformLocation(axis_shader, "model"), 1, GL_FALSE, glm::value_ptr(axis_model));
+	glUniformMatrix4fv(glGetUniformLocation(axis_shader, "view"), 1, GL_FALSE, glm::value_ptr(camera.view));
+	glUniformMatrix4fv(glGetUniformLocation(axis_shader, "projection"), 1, GL_FALSE, glm::value_ptr(camera.projection));
+	glUseProgram(0);
+
+	glUseProgram(axis_shader);
+	glBindVertexArray(axis_VAO);
+
+	glDrawArrays(GL_LINES, 0, (GLsizei)axis_vertices.size() / 3);
+
+	glBindVertexArray(0);
 	glUseProgram(0);
 }

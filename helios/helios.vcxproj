@@ -159,13 +159,17 @@
     <ClInclude Include="src\solarsystem.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="src\default_planet.fs" />
-    <None Include="src\default_planet.vs" />
-    <None Include="src\default_sun.fs" />
-    <None Include="src\default_sun.vs" />
+    <Image Include="res\textures\test.png" />
   </ItemGroup>
   <ItemGroup>
-    <Image Include="res\textures\test.png" />
+    <None Include="src\default_axis.fs" />
+    <None Include="src\default_axis.vs" />
+    <None Include="src\default_body.fs" />
+    <None Include="src\default_body.vs" />
+    <None Include="src\default_orbit.fs" />
+    <None Include="src\default_orbit.vs" />
+    <None Include="src\sun_body.fs" />
+    <None Include="src\sun_body.vs" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

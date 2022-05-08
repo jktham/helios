@@ -61,22 +61,34 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="src\default_planet.fs">
-      <Filter>Shader FIles</Filter>
-    </None>
-    <None Include="src\default_planet.vs">
-      <Filter>Shader FIles</Filter>
-    </None>
-    <None Include="src\default_sun.fs">
-      <Filter>Shader FIles</Filter>
-    </None>
-    <None Include="src\default_sun.vs">
-      <Filter>Shader FIles</Filter>
-    </None>
-  </ItemGroup>
-  <ItemGroup>
     <Image Include="res\textures\test.png">
       <Filter>Resource Files</Filter>
     </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="src\default_axis.fs">
+      <Filter>Shader FIles</Filter>
+    </None>
+    <None Include="src\default_axis.vs">
+      <Filter>Shader FIles</Filter>
+    </None>
+    <None Include="src\default_body.fs">
+      <Filter>Shader FIles</Filter>
+    </None>
+    <None Include="src\default_body.vs">
+      <Filter>Shader FIles</Filter>
+    </None>
+    <None Include="src\default_orbit.fs">
+      <Filter>Shader FIles</Filter>
+    </None>
+    <None Include="src\default_orbit.vs">
+      <Filter>Shader FIles</Filter>
+    </None>
+    <None Include="src\sun_body.fs">
+      <Filter>Shader FIles</Filter>
+    </None>
+    <None Include="src\sun_body.vs">
+      <Filter>Shader FIles</Filter>
+    </None>
   </ItemGroup>
 </Project>
