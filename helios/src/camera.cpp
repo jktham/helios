@@ -30,10 +30,10 @@ void Camera::processMouseMovement(float offset_x, float offset_y)
 	yaw += offset_x;
 	pitch += offset_y;
 
-	if (pitch > 89.99f)
-		pitch = 89.99f;
-	if (pitch < -89.99f)
-		pitch = -89.99f;
+	if (pitch > 89.9999f)
+		pitch = 89.9999f;
+	if (pitch < -89.9999f)
+		pitch = -89.9999f;
 
 	updateCameraVectors();
 }
@@ -57,5 +57,5 @@ void Camera::updateViewMatrix()
 
 void Camera::updateProjectionMatrix()
 {
-	projection = glm::perspective(glm::radians(fov), 1920.0f / 1080.0f, 0.1f, 200.0f);
+	projection = glm::perspective(glm::radians(fov), 1920.0f / 1080.0f, 0.1f, 1000.0f);
 }
