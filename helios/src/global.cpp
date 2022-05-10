@@ -2,3 +2,4 @@
 
 Camera camera;
 Solarsystem solarsystem;
+UI ui;

@@ -1,6 +1,7 @@
 #include "camera.h"
 #include "planet.h"
 #include "solarsystem.h"
+#include "ui.h"
 #include "global.h"
 
 #include <glad/glad.h>
@@ -72,6 +73,11 @@ int main()
 	solarsystem.initializePlanets();
 	solarsystem.generatePlanets();
 
+	ui.compileShader();
+	ui.generateBuffers();
+	ui.initializePages();
+	ui.current_page = ui.pages[0];
+
 	// render loop
 	while (!glfwWindowShouldClose(window))
 	{
@@ -96,6 +102,9 @@ int main()
 
 		solarsystem.updatePlanets(delta_time);
 		solarsystem.drawPlanets();
+
+		ui.updatePage();
+		ui.drawPage();
 
 		glfwSwapBuffers(window);
 		glfwPollEvents();

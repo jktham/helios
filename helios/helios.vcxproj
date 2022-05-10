@@ -146,6 +146,7 @@
     <ClCompile Include="src\camera.cpp" />
     <ClCompile Include="src\glad.c" />
     <ClCompile Include="src\global.cpp" />
+    <ClCompile Include="src\ui.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\planet.cpp" />
     <ClCompile Include="src\stb_image.cpp" />
@@ -154,6 +155,7 @@
   <ItemGroup>
     <ClInclude Include="src\camera.h" />
     <ClInclude Include="src\global.h" />
+    <ClInclude Include="src\ui.h" />
     <ClInclude Include="src\planet.h" />
     <ClInclude Include="src\stb_image.h" />
     <ClInclude Include="src\solarsystem.h" />
@@ -162,12 +164,14 @@
     <Image Include="res\textures\test.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="src\default_axis.fs" />
-    <None Include="src\default_axis.vs" />
-    <None Include="src\default_body.fs" />
-    <None Include="src\default_body.vs" />
-    <None Include="src\default_orbit.fs" />
-    <None Include="src\default_orbit.vs" />
+    <None Include="src\axis.fs" />
+    <None Include="src\axis.vs" />
+    <None Include="src\body.fs" />
+    <None Include="src\body.vs" />
+    <None Include="src\ui.fs" />
+    <None Include="src\ui.vs" />
+    <None Include="src\orbit.fs" />
+    <None Include="src\orbit.vs" />
     <None Include="src\sun_body.fs" />
     <None Include="src\sun_body.vs" />
   </ItemGroup>

@@ -62,24 +62,24 @@ public:
 	std::vector<float> orbit_vertices;
 	std::vector<float> axis_vertices;
 
-	GLuint body_VAO = 0;
-	GLuint body_VBO = 0;
-	GLuint body_EBO = 0;
+	GLuint body_vao = 0;
+	GLuint body_vbo = 0;
+	GLuint body_ebo = 0;
 	GLuint body_shader = 0;
 	GLuint texture1 = 0;
 
-	GLuint orbit_VAO = 0;
-	GLuint orbit_VBO = 0;
+	GLuint orbit_vao = 0;
+	GLuint orbit_vbo = 0;
 	GLuint orbit_shader = 0;
-	GLuint axis_VAO = 0;
-	GLuint axis_VBO = 0;
+	GLuint axis_vao = 0;
+	GLuint axis_vbo = 0;
 	GLuint axis_shader = 0;
 
-	std::string body_shader_path = "src/default_body";
+	std::string body_shader_path = "src/body";
 	std::string texture_path = "res/textures/test.png";
 
-	std::string orbit_shader_path = "src/default_orbit";
-	std::string axis_shader_path = "src/default_axis";
+	std::string orbit_shader_path = "src/orbit";
+	std::string axis_shader_path = "src/axis";
 
 	void compileShader();
 	void loadTextures();

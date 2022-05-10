@@ -407,67 +407,67 @@ void Planet::updateModelMatrix()
 
 void Planet::generateBuffers()
 {
-	glGenVertexArrays(1, &body_VAO);
-	glGenBuffers(1, &body_VBO);
-	glGenBuffers(1, &body_EBO);
+	glGenVertexArrays(1, &body_vao);
+	glGenBuffers(1, &body_vbo);
+	glGenBuffers(1, &body_ebo);
 
-	glGenVertexArrays(1, &orbit_VAO);
-	glGenBuffers(1, &orbit_VBO);
-	glGenVertexArrays(1, &axis_VAO);
-	glGenBuffers(1, &axis_VBO);
+	glGenVertexArrays(1, &orbit_vao);
+	glGenBuffers(1, &orbit_vbo);
+	glGenVertexArrays(1, &axis_vao);
+	glGenBuffers(1, &axis_vbo);
 }
 
 void Planet::updateBuffers()
 {
 	// vertex array object
-	glBindVertexArray(body_VAO);
+	glBindVertexArray(body_vao);
 
 	// vertex buffer object
-	glBindBuffer(GL_ARRAY_BUFFER, body_VBO);
+	glBindBuffer(GL_ARRAY_BUFFER, body_vbo);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * body_vertices.size(), body_vertices.data(), GL_STATIC_DRAW);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 
 	// vertex attribute (position)
-	glBindBuffer(GL_ARRAY_BUFFER, body_VBO);
+	glBindBuffer(GL_ARRAY_BUFFER, body_vbo);
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 12 * sizeof(float), (void*)(0 * sizeof(float)));
 	glEnableVertexAttribArray(0);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 
 	// vertex attribute (normal)
-	glBindBuffer(GL_ARRAY_BUFFER, body_VBO);
+	glBindBuffer(GL_ARRAY_BUFFER, body_vbo);
 	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 12 * sizeof(float), (void*)(3 * sizeof(float)));
 	glEnableVertexAttribArray(1);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 
 	// vertex attribute (texcoord)
-	glBindBuffer(GL_ARRAY_BUFFER, body_VBO);
+	glBindBuffer(GL_ARRAY_BUFFER, body_vbo);
 	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 12 * sizeof(float), (void*)(6 * sizeof(float)));
 	glEnableVertexAttribArray(2);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 
 	// vertex attribute (color)
-	glBindBuffer(GL_ARRAY_BUFFER, body_VBO);
+	glBindBuffer(GL_ARRAY_BUFFER, body_vbo);
 	glVertexAttribPointer(3, 4, GL_FLOAT, GL_FALSE, 12 * sizeof(float), (void*)(8 * sizeof(float)));
 	glEnableVertexAttribArray(3);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 
 	// element index buffer
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, body_EBO);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, body_ebo);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, body_indices.size() * sizeof(unsigned int), &body_indices[0], GL_STATIC_DRAW);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 
 	glBindVertexArray(0);
 
 	// vertex array object
-	glBindVertexArray(orbit_VAO);
+	glBindVertexArray(orbit_vao);
 
 	// vertex buffer object
-	glBindBuffer(GL_ARRAY_BUFFER, orbit_VBO);
+	glBindBuffer(GL_ARRAY_BUFFER, orbit_vbo);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * orbit_vertices.size(), orbit_vertices.data(), GL_STATIC_DRAW);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 
 	// vertex attribute (position)
-	glBindBuffer(GL_ARRAY_BUFFER, orbit_VBO);
+	glBindBuffer(GL_ARRAY_BUFFER, orbit_vbo);
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)(0 * sizeof(float)));
 	glEnableVertexAttribArray(0);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
@@ -475,15 +475,15 @@ void Planet::updateBuffers()
 	glBindVertexArray(0);
 
 	// vertex array object
-	glBindVertexArray(axis_VAO);
+	glBindVertexArray(axis_vao);
 
 	// vertex buffer object
-	glBindBuffer(GL_ARRAY_BUFFER, axis_VBO);
+	glBindBuffer(GL_ARRAY_BUFFER, axis_vbo);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * axis_vertices.size(), axis_vertices.data(), GL_STATIC_DRAW);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 
 	// vertex attribute (position)
-	glBindBuffer(GL_ARRAY_BUFFER, axis_VBO);
+	glBindBuffer(GL_ARRAY_BUFFER, axis_vbo);
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)(0 * sizeof(float)));
 	glEnableVertexAttribArray(0);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
@@ -517,8 +517,8 @@ void Planet::drawBody()
 	glUseProgram(body_shader);
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, texture1);
-	glBindVertexArray(body_VAO);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, body_EBO);
+	glBindVertexArray(body_vao);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, body_ebo);
 
 	glDrawElements(GL_TRIANGLES, (GLsizei)body_indices.size(), GL_UNSIGNED_INT, (void*)0);
 
@@ -537,7 +537,7 @@ void Planet::drawOrbit()
 	glUseProgram(0);
 
 	glUseProgram(orbit_shader);
-	glBindVertexArray(orbit_VAO);
+	glBindVertexArray(orbit_vao);
 
 	glDrawArrays(GL_LINE_LOOP, 0, (GLsizei)orbit_vertices.size() / 3);
 
@@ -554,7 +554,7 @@ void Planet::drawAxis()
 	glUseProgram(0);
 
 	glUseProgram(axis_shader);
-	glBindVertexArray(axis_VAO);
+	glBindVertexArray(axis_vao);
 
 	glDrawArrays(GL_LINES, 0, (GLsizei)axis_vertices.size() / 3);
 
