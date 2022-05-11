@@ -1,5 +1,7 @@
 #pragma once
 
+#include "planet.h"
+
 #include <glm/glm.hpp>
 
 enum class Movement
@@ -25,10 +27,14 @@ public:
 	glm::vec3 right{};
 	glm::vec3 up{};
 
+	glm::vec3 offset = glm::vec3(0.0f);
+	Planet* anchor;
+
 	glm::mat4 view;
 	glm::mat4 projection;
 
 	Camera();
+	void updatePosition();
 	void applyMovement(Movement movement, float delta_time);
 	void processMouseMovement(float offset_x, float offset_y);
 	void updateCameraVectors();

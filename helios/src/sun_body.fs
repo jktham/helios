@@ -21,7 +21,7 @@ in vec3 normal;
 in vec2 tex_coord;
 in vec4 color;
 
-uniform sampler2D texture1;
+uniform sampler2D body_texture;
 uniform vec3 view_pos;
 
 uniform Material material;
@@ -31,5 +31,5 @@ out vec4 frag_color;
 
 void main()
 {
-    frag_color = color * vec4(material.color, 1.0f) * texture(texture1, tex_coord);
+    frag_color = color * vec4(material.color, 1.0f) * texture(body_texture, tex_coord);
 }

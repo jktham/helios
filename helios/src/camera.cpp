@@ -10,16 +10,25 @@ Camera::Camera()
 	updateProjectionMatrix();
 }
 
+void Camera::updatePosition()
+{
+	position = anchor->position + offset;
+}
+
 void Camera::applyMovement(Movement movement, float delta_time)
 {
+	glm::vec3 movement_vector = glm::vec3(0.0f);
+
 	if (movement == Movement::FRONT)
-		position += front * speed * delta_time;
+		movement_vector += front * speed * delta_time;
 	if (movement == Movement::BACK)
-		position -= front * speed * delta_time;
+		movement_vector -= front * speed * delta_time;
 	if (movement == Movement::LEFT)
-		position -= right * speed * delta_time;
+		movement_vector -= right * speed * delta_time;
 	if (movement == Movement::RIGHT)
-		position += right * speed * delta_time;
+		movement_vector += right * speed * delta_time;
+
+	offset += movement_vector;
 }
 
 void Camera::processMouseMovement(float offset_x, float offset_y)

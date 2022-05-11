@@ -66,7 +66,7 @@ public:
 	GLuint body_vbo = 0;
 	GLuint body_ebo = 0;
 	GLuint body_shader = 0;
-	GLuint texture1 = 0;
+	GLuint body_texture = 0;
 
 	GLuint orbit_vao = 0;
 	GLuint orbit_vbo = 0;

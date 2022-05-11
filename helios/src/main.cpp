@@ -68,10 +68,11 @@ int main()
 	float last_frame = 0.0f;
 	float delta_time = 0.0f;
 
-	camera.position = glm::vec3(-40.0f, 0.0f, 0.0f);
-
 	solarsystem.initializePlanets();
 	solarsystem.generatePlanets();
+
+	camera.offset = glm::vec3(-40.0f, 0.0f, 0.0f);
+	camera.anchor = solarsystem.planets[0];
 
 	ui.compileShader();
 	ui.generateBuffers();
@@ -97,10 +98,12 @@ int main()
 
 		processInputState(window, delta_time);
 
+		solarsystem.updatePlanets(delta_time);
+
+		camera.updatePosition();
 		camera.updateViewMatrix();
 		camera.updateProjectionMatrix();
 
-		solarsystem.updatePlanets(delta_time);
 		solarsystem.drawPlanets();
 
 		ui.updatePage();
@@ -181,6 +184,13 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 	{
 		solarsystem.paused = !solarsystem.paused;
 	}
+
+	for (int i = 0; i < 10 && i < solarsystem.planets.size(); i++)
+		if (key == GLFW_KEY_0 + i && action == GLFW_PRESS)
+		{
+			camera.anchor = solarsystem.planets[i];
+			//camera.offset = glm::normalize(camera.offset) * solarsystem.planets[i]->radius * 8.0f;
+		}
 }
 
 void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)

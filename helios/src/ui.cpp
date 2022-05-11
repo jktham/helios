@@ -110,11 +110,11 @@ void UI::initializePages()
 		pages.push_back(page);
 	}
 
-	Quad* test_quad = new Quad;
+	/*Quad* test_quad = new Quad;
 	test_quad->position = glm::vec2(100.0f, 100.0f);
 	test_quad->width = glm::vec2(100.0f, 100.0f);
 	test_quad->color = glm::vec4(1.0f, 1.0f, 1.0f, 0.5f);
-	pages[0]->elements.push_back(test_quad);
+	pages[0]->elements.push_back(test_quad);*/
 }
 
 void UI::updatePage()

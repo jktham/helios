@@ -130,9 +130,9 @@ void Planet::loadTextures()
 	int width, height, channels;
 	unsigned char* data;
 
-	glGenTextures(1, &texture1);
+	glGenTextures(1, &body_texture);
 	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, texture1);
+	glBindTexture(GL_TEXTURE_2D, body_texture);
 
 	stbi_set_flip_vertically_on_load(true);
 	data = stbi_load(texture_path.c_str(), &width, &height, &channels, 0);
@@ -507,7 +507,7 @@ void Planet::drawBody()
 	glUniform3f(glGetUniformLocation(body_shader, "light.specular"), light_source->light.specular.r, light_source->light.specular.g, light_source->light.specular.b);
 
 	glUniform3f(glGetUniformLocation(body_shader, "view_pos"), camera.position.x, camera.position.y, camera.position.z);
-	glUniform1i(glGetUniformLocation(body_shader, "texture1"), 0);
+	glUniform1i(glGetUniformLocation(body_shader, "body_texture"), 0);
 
 	glUniformMatrix4fv(glGetUniformLocation(body_shader, "model"), 1, GL_FALSE, glm::value_ptr(body_model));
 	glUniformMatrix4fv(glGetUniformLocation(body_shader, "view"), 1, GL_FALSE, glm::value_ptr(camera.view));
@@ -516,7 +516,7 @@ void Planet::drawBody()
 
 	glUseProgram(body_shader);
 	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, texture1);
+	glBindTexture(GL_TEXTURE_2D, body_texture);
 	glBindVertexArray(body_vao);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, body_ebo);
 
