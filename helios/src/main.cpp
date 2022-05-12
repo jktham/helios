@@ -74,8 +74,6 @@ int main()
 	camera.offset = glm::vec3(-40.0f, 0.0f, 0.0f);
 	camera.anchor = solarsystem.planets[0];
 
-	ui.compileShader();
-	ui.generateBuffers();
 	ui.initializePages();
 	ui.current_page = ui.pages[0];
 
@@ -106,8 +104,8 @@ int main()
 
 		solarsystem.drawPlanets();
 
-		ui.updatePage();
-		ui.drawPage();
+		ui.updatePage(ui.current_page);
+		ui.drawPage(ui.current_page);
 
 		glfwSwapBuffers(window);
 		glfwPollEvents();

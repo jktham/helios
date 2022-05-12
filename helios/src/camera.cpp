@@ -66,5 +66,5 @@ void Camera::updateViewMatrix()
 
 void Camera::updateProjectionMatrix()
 {
-	projection = glm::perspective(glm::radians(fov), 1920.0f / 1080.0f, 0.1f, 1000.0f);
+	projection = glm::perspective(glm::radians(fov), 1920.0f / 1080.0f, 0.01f, 1000.0f);
 }
