@@ -75,11 +75,11 @@ public:
 	GLuint axis_vbo = 0;
 	GLuint axis_shader = 0;
 
-	std::string body_shader_path = "src/body";
+	std::string body_shader_path = "src/planet_body";
 	std::string texture_path = "res/textures/test.png";
 
-	std::string orbit_shader_path = "src/orbit";
-	std::string axis_shader_path = "src/axis";
+	std::string orbit_shader_path = "src/planet_orbit";
+	std::string axis_shader_path = "src/planet_axis";
 
 	void compileShader();
 	void loadTextures();

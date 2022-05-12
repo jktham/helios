@@ -12,7 +12,6 @@
 
 void Element::compileShader()
 {
-	// vertex shader
 	const char* vert_source;
 
 	std::ifstream vert_file(shader_path + ".vs");
@@ -25,7 +24,6 @@ void Element::compileShader()
 	glShaderSource(vert_shader, 1, &vert_source, NULL);
 	glCompileShader(vert_shader);
 
-	// fragment shader
 	const char* frag_source;
 
 	std::ifstream frag_file(shader_path + ".fs");
@@ -38,7 +36,6 @@ void Element::compileShader()
 	glShaderSource(frag_shader, 1, &frag_source, NULL);
 	glCompileShader(frag_shader);
 
-	// shader program
 	shader = glCreateProgram();
 
 	glAttachShader(shader, vert_shader);
@@ -57,61 +54,78 @@ void Element::generateBuffers()
 
 void Element::loadTexture()
 {
-	int width, height, channels;
-	unsigned char* data;
-
-	glGenTextures(1, &texture);
-	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, texture);
-
-	stbi_set_flip_vertically_on_load(true);
-	data = stbi_load(texture_path.c_str(), &width, &height, &channels, 0);
-	if (data)
+	if (textured)
 	{
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
-		glGenerateMipmap(GL_TEXTURE_2D);
+		int width, height, channels;
+		unsigned char* data;
+
+		glGenTextures(1, &texture);
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D, texture);
+
+		stbi_set_flip_vertically_on_load(true);
+		data = stbi_load(texture_path.c_str(), &width, &height, &channels, 0);
+		if (data)
+		{
+			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+			glGenerateMipmap(GL_TEXTURE_2D);
+		}
+		stbi_image_free(data);
+
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_NEAREST);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+
+		glBindTexture(GL_TEXTURE_2D, 0);
 	}
-	stbi_image_free(data);
-
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_NEAREST);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-
-	glBindTexture(GL_TEXTURE_2D, 0);
 }
 
 void Element::generateMesh()
 {
-	mesh = {};
 }
 
 void Element::updateBuffers()
 {
-	// vertex array object
-	glBindVertexArray(vao);
-
-	// vertex buffer object
-	glBindBuffer(GL_ARRAY_BUFFER, vbo);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * mesh.size(), mesh.data(), GL_STATIC_DRAW);
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
-
-	glBindVertexArray(0);
 }
 
-void Element::draw()
+void Element::setUniforms()
 {
 	glUseProgram(shader);
 	glUniformMatrix4fv(glGetUniformLocation(shader, "projection"), 1, GL_FALSE, glm::value_ptr(ui.projection));
 	glUseProgram(0);
+}
 
-	glUseProgram(shader);
-	glBindVertexArray(vao);
+void Element::draw()
+{
+	if (textured)
+	{
+		glUseProgram(shader);
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D, texture);
+		glBindVertexArray(vao);
 
-	glDrawArrays(GL_TRIANGLES, 0, (GLsizei)mesh.size() / vert_stride);
+		glDrawArrays(GL_TRIANGLES, 0, (GLsizei)mesh.size() / vert_stride);
 
-	glBindVertexArray(0);
-	glUseProgram(0);
+		glBindVertexArray(0);
+		glBindTexture(GL_TEXTURE_2D, 0);
+		glUseProgram(0);
+	}
+	else
+	{
+		glUseProgram(shader);
+		glBindVertexArray(vao);
+
+		glDrawArrays(GL_TRIANGLES, 0, (GLsizei)mesh.size() / vert_stride);
+
+		glBindVertexArray(0);
+		glUseProgram(0);
+	}
+}
+
+Quad::Quad()
+{
+	shader_path = "src/ui_quad";
 }
 
 void Quad::generateMesh()
@@ -151,7 +165,7 @@ void Quad::updateBuffers()
 	glBindVertexArray(0);
 }
 
-void Page::generate()
+void Page::generateElements()
 {
 	for (int i = 0; i < elements.size(); i++)
 	{
@@ -160,10 +174,11 @@ void Page::generate()
 	}
 }
 
-void Page::draw()
+void Page::drawElements()
 {
 	for (int i = 0; i < elements.size(); i++)
 	{
+		elements[i]->setUniforms();
 		elements[i]->draw();
 	}
 }
@@ -193,10 +208,10 @@ void UI::initializePages()
 
 void UI::updatePage(Page* page)
 {
-	page->generate();
+	page->generateElements();
 }
 
 void UI::drawPage(Page* page)
 {
-	page->draw();
+	page->drawElements();
 }

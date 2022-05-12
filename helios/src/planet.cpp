@@ -16,7 +16,7 @@
 
 void Planet::compileShader()
 {
-	// body vertex shader
+	// body
 	const char* body_vert_source;
 
 	std::ifstream body_vert_file(body_shader_path + ".vs");
@@ -29,7 +29,6 @@ void Planet::compileShader()
 	glShaderSource(body_vert_shader, 1, &body_vert_source, NULL);
 	glCompileShader(body_vert_shader);
 
-	// body fragment shader
 	const char* body_frag_source;
 
 	std::ifstream body_frag_file(body_shader_path + ".fs");
@@ -42,7 +41,6 @@ void Planet::compileShader()
 	glShaderSource(body_frag_shader, 1, &body_frag_source, NULL);
 	glCompileShader(body_frag_shader);
 
-	// body shader program
 	body_shader = glCreateProgram();
 
 	glAttachShader(body_shader, body_vert_shader);
@@ -52,7 +50,7 @@ void Planet::compileShader()
 	glDeleteShader(body_vert_shader);
 	glDeleteShader(body_frag_shader);
 
-	// orbit vertex shader
+	// orbit
 	const char* orbit_vert_source;
 
 	std::ifstream orbit_vert_file(orbit_shader_path + ".vs");
@@ -65,7 +63,6 @@ void Planet::compileShader()
 	glShaderSource(orbit_vert_shader, 1, &orbit_vert_source, NULL);
 	glCompileShader(orbit_vert_shader);
 
-	// orbit fragment shader
 	const char* orbit_frag_source;
 
 	std::ifstream orbit_frag_file(orbit_shader_path + ".fs");
@@ -78,7 +75,6 @@ void Planet::compileShader()
 	glShaderSource(orbit_frag_shader, 1, &orbit_frag_source, NULL);
 	glCompileShader(orbit_frag_shader);
 
-	// orbit shader program
 	orbit_shader = glCreateProgram();
 
 	glAttachShader(orbit_shader, orbit_vert_shader);
@@ -88,7 +84,7 @@ void Planet::compileShader()
 	glDeleteShader(orbit_vert_shader);
 	glDeleteShader(orbit_frag_shader);
 
-	// axis vertex shader
+	// axis
 	const char* axis_vert_source;
 
 	std::ifstream axis_vert_file(axis_shader_path + ".vs");
@@ -101,7 +97,6 @@ void Planet::compileShader()
 	glShaderSource(axis_vert_shader, 1, &axis_vert_source, NULL);
 	glCompileShader(axis_vert_shader);
 
-	// axis fragment shader
 	const char* axis_frag_source;
 
 	std::ifstream axis_frag_file(axis_shader_path + ".fs");
@@ -114,7 +109,6 @@ void Planet::compileShader()
 	glShaderSource(axis_frag_shader, 1, &axis_frag_source, NULL);
 	glCompileShader(axis_frag_shader);
 
-	// axis shader program
 	axis_shader = glCreateProgram();
 
 	glAttachShader(axis_shader, axis_vert_shader);
@@ -257,7 +251,7 @@ void Planet::generateMesh()
 		}
 	}
 
-	// generate body_indices
+	// generate body indices
 	std::vector<unsigned int> index;
 
 	// pole indices
@@ -413,60 +407,58 @@ void Planet::generateBuffers()
 
 	glGenVertexArrays(1, &orbit_vao);
 	glGenBuffers(1, &orbit_vbo);
+
 	glGenVertexArrays(1, &axis_vao);
 	glGenBuffers(1, &axis_vbo);
 }
 
 void Planet::updateBuffers()
 {
-	// vertex array object
+	// body
 	glBindVertexArray(body_vao);
 
-	// vertex buffer object
 	glBindBuffer(GL_ARRAY_BUFFER, body_vbo);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * body_vertices.size(), body_vertices.data(), GL_STATIC_DRAW);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 
-	// vertex attribute (position)
+	// position
 	glBindBuffer(GL_ARRAY_BUFFER, body_vbo);
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 12 * sizeof(float), (void*)(0 * sizeof(float)));
 	glEnableVertexAttribArray(0);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 
-	// vertex attribute (normal)
+	// normal
 	glBindBuffer(GL_ARRAY_BUFFER, body_vbo);
 	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 12 * sizeof(float), (void*)(3 * sizeof(float)));
 	glEnableVertexAttribArray(1);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 
-	// vertex attribute (texcoord)
+	// texcoord
 	glBindBuffer(GL_ARRAY_BUFFER, body_vbo);
 	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 12 * sizeof(float), (void*)(6 * sizeof(float)));
 	glEnableVertexAttribArray(2);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 
-	// vertex attribute (color)
+	// color
 	glBindBuffer(GL_ARRAY_BUFFER, body_vbo);
 	glVertexAttribPointer(3, 4, GL_FLOAT, GL_FALSE, 12 * sizeof(float), (void*)(8 * sizeof(float)));
 	glEnableVertexAttribArray(3);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 
-	// element index buffer
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, body_ebo);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, body_indices.size() * sizeof(unsigned int), &body_indices[0], GL_STATIC_DRAW);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 
 	glBindVertexArray(0);
 
-	// vertex array object
+	// orbit
 	glBindVertexArray(orbit_vao);
 
-	// vertex buffer object
 	glBindBuffer(GL_ARRAY_BUFFER, orbit_vbo);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * orbit_vertices.size(), orbit_vertices.data(), GL_STATIC_DRAW);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 
-	// vertex attribute (position)
+	// position
 	glBindBuffer(GL_ARRAY_BUFFER, orbit_vbo);
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)(0 * sizeof(float)));
 	glEnableVertexAttribArray(0);
@@ -474,15 +466,14 @@ void Planet::updateBuffers()
 
 	glBindVertexArray(0);
 
-	// vertex array object
+	// axis
 	glBindVertexArray(axis_vao);
 
-	// vertex buffer object
 	glBindBuffer(GL_ARRAY_BUFFER, axis_vbo);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * axis_vertices.size(), axis_vertices.data(), GL_STATIC_DRAW);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 
-	// vertex attribute (position)
+	// position
 	glBindBuffer(GL_ARRAY_BUFFER, axis_vbo);
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)(0 * sizeof(float)));
 	glEnableVertexAttribArray(0);

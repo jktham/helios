@@ -16,7 +16,6 @@
 #include <fstream>
 #include <vector>
 
-// callbacks
 void processInputState(GLFWwindow* window, float delta_time);
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods);
 void mouse_button_callback(GLFWwindow* window, int button, int action, int mods);
@@ -27,7 +26,6 @@ void APIENTRY debug_callback(GLenum source, GLenum type, unsigned int id, GLenum
 
 int main()
 {
-	// window setup
 	glfwInit();
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
@@ -41,14 +39,12 @@ int main()
 
 	glViewport(0, 0, 1920, 1080);
 
-	// callbacks
 	glfwSetKeyCallback(window, key_callback);
 	glfwSetMouseButtonCallback(window, mouse_button_callback);
 	glfwSetCursorPosCallback(window, mouse_cursor_callback);
 	glfwSetScrollCallback(window, mouse_scroll_callback);
 	glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
 
-	// opengl settings
 	glEnable(GL_DEPTH_TEST);
 	//glEnable(GL_CULL_FACE);
 	glEnable(GL_DEBUG_OUTPUT);
@@ -63,7 +59,6 @@ int main()
 	glLineWidth(1.0f);
 	glPointSize(1.0f);
 
-	// setup
 	float current_frame = 0.0f;
 	float last_frame = 0.0f;
 	float delta_time = 0.0f;
@@ -77,7 +72,6 @@ int main()
 	ui.initializePages();
 	ui.current_page = ui.pages[0];
 
-	// render loop
 	while (!glfwWindowShouldClose(window))
 	{
 		if ((float)glfwGetTime() - last_frame < 1.0f / 120.0f)
@@ -227,7 +221,6 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 
 void APIENTRY debug_callback(GLenum source, GLenum type, unsigned int id, GLenum severity, GLsizei length, const char* message, const void* userParam)
 {
-	// ignore non-significant error/warning codes
 	if (id == 131169 || id == 131185 || id == 131218 || id == 131204) return;
 
 	std::cout << "---------------" << std::endl;

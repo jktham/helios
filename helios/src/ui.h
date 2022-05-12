@@ -16,8 +16,9 @@ public:
 	std::vector<float> mesh;
 	int vert_stride = 1;
 
-	std::string shader_path = "src/ui";
-	std::string texture_path = "res/test.png";
+	std::string shader_path = "";
+	std::string texture_path = "";
+	bool textured = false;
 
 	GLuint vao = 0;
 	GLuint vbo = 0;
@@ -31,6 +32,7 @@ public:
 	virtual void generateMesh();
 	virtual void updateBuffers();
 
+	virtual void setUniforms();
 	virtual void draw();
 };
 
@@ -39,6 +41,7 @@ class Quad : public Element
 public:
 	glm::vec4 color = glm::vec4(1.0f);
 
+	Quad();
 	void generateMesh();
 	void updateBuffers();
 };
@@ -48,8 +51,8 @@ class Page
 public:
 	std::vector<Element*> elements;
 
-	void generate();
-	void draw();
+	void generateElements();
+	void drawElements();
 };
 
 class UI

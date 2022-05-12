@@ -78,28 +78,28 @@
     <None Include="src\sun_body.vs">
       <Filter>Shader FIles</Filter>
     </None>
-    <None Include="src\ui.fs">
+    <None Include="src\ui_quad.fs">
       <Filter>Shader FIles</Filter>
     </None>
-    <None Include="src\ui.vs">
+    <None Include="src\ui_quad.vs">
       <Filter>Shader FIles</Filter>
     </None>
-    <None Include="src\orbit.fs">
+    <None Include="src\planet_axis.fs">
       <Filter>Shader FIles</Filter>
     </None>
-    <None Include="src\orbit.vs">
+    <None Include="src\planet_axis.vs">
       <Filter>Shader FIles</Filter>
     </None>
-    <None Include="src\axis.fs">
+    <None Include="src\planet_body.fs">
       <Filter>Shader FIles</Filter>
     </None>
-    <None Include="src\axis.vs">
+    <None Include="src\planet_body.vs">
       <Filter>Shader FIles</Filter>
     </None>
-    <None Include="src\body.fs">
+    <None Include="src\planet_orbit.fs">
       <Filter>Shader FIles</Filter>
     </None>
-    <None Include="src\body.vs">
+    <None Include="src\planet_orbit.vs">
       <Filter>Shader FIles</Filter>
     </None>
   </ItemGroup>
