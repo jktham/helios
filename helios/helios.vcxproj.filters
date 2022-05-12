@@ -102,5 +102,11 @@
     <None Include="src\planet_orbit.vs">
       <Filter>Shader FIles</Filter>
     </None>
+    <None Include="src\ui_textured_quad.fs">
+      <Filter>Shader FIles</Filter>
+    </None>
+    <None Include="src\ui_textured_quad.vs">
+      <Filter>Shader FIles</Filter>
+    </None>
   </ItemGroup>
 </Project>

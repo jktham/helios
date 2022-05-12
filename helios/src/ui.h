@@ -17,13 +17,10 @@ public:
 	int vert_stride = 1;
 
 	std::string shader_path = "";
-	std::string texture_path = "";
-	bool textured = false;
 
 	GLuint vao = 0;
 	GLuint vbo = 0;
 	GLuint shader = 0;
-	GLuint texture = 0;
 
 	virtual void compileShader();
 	virtual void generateBuffers();
@@ -44,6 +41,25 @@ public:
 	Quad();
 	void generateMesh();
 	void updateBuffers();
+};
+
+class TexturedQuad : public Element
+{
+public:
+	glm::vec4 color = glm::vec4(1.0f);
+	glm::vec2 tex_position = glm::vec2(0.0f);
+	glm::vec2 tex_size = glm::vec2(1.0f);
+
+	std::string texture_path = "res/textures/test.png";
+
+	GLuint texture = 0;
+
+	TexturedQuad();
+	void loadTexture();
+	void generateMesh();
+	void updateBuffers();
+	void setUniforms();
+	void draw();
 };
 
 class Page
