@@ -338,7 +338,7 @@ void Planet::generateMesh()
 
 void Planet::updatePosition(float delta_time)
 {
-	if (relative_orbit)
+	if (orbit_anchor)
 	{
 		orbit_center = orbit_anchor->position;
 	}

@@ -22,7 +22,6 @@ void Solarsystem::initializePlanets()
 	planets[1]->name = "S1-P1";
 	planets[1]->radius = 1.0f;
 	planets[1]->rotation_speed = 1.0f;
-	planets[1]->relative_orbit = true;
 	planets[1]->orbit_anchor = planets[0];
 	planets[1]->orbit_radius = 15.0f;
 	planets[1]->orbit_speed = 1.0f;
@@ -35,7 +34,6 @@ void Solarsystem::initializePlanets()
 	planets[2]->name = "S1-P2";
 	planets[2]->radius = 2.0f;
 	planets[2]->rotation_speed = -0.6f;
-	planets[2]->relative_orbit = true;
 	planets[2]->orbit_anchor = planets[0];
 	planets[2]->orbit_radius = 30.0f;
 	planets[2]->orbit_speed = -0.6f;
@@ -48,7 +46,6 @@ void Solarsystem::initializePlanets()
 	planets[3]->name = "S1-P3";
 	planets[3]->radius = 5.0f;
 	planets[3]->rotation_speed = 0.1f;
-	planets[3]->relative_orbit = true;
 	planets[3]->orbit_anchor = planets[0];
 	planets[3]->orbit_radius = 60.0f;
 	planets[3]->orbit_speed = 0.1f;
@@ -58,7 +55,6 @@ void Solarsystem::initializePlanets()
 	planets[4]->name = "S1-P3-M1";
 	planets[4]->radius = 0.5f;
 	planets[4]->rotation_speed = 2.0f;
-	planets[4]->relative_orbit = true;
 	planets[4]->orbit_anchor = planets[3];
 	planets[4]->orbit_axis = glm::normalize(glm::vec3(0.8f, 0.0f, 1.0f));
 	planets[4]->orbit_radius = 10.0f;
@@ -71,7 +67,6 @@ void Solarsystem::initializePlanets()
 	planets[5]->name = "S1-P4";
 	planets[5]->radius = 2.0f;
 	planets[5]->rotation_speed = 5.0f;
-	planets[5]->relative_orbit = true;
 	planets[5]->orbit_anchor = planets[0];
 	planets[5]->orbit_radius = 200.0f;
 	planets[5]->orbit_speed = 0.01f;
@@ -84,7 +79,6 @@ void Solarsystem::initializePlanets()
 	planets[6]->name = "S1-P4-M1";
 	planets[6]->radius = 1.0f;
 	planets[6]->rotation_speed = 0.2f;
-	planets[6]->relative_orbit = true;
 	planets[6]->orbit_anchor = planets[5];
 	planets[6]->orbit_axis = glm::normalize(glm::vec3(2.0f, 0.0f, 1.0f));
 	planets[6]->orbit_radius = 40.0f;
@@ -97,7 +91,6 @@ void Solarsystem::initializePlanets()
 	planets[7]->name = "S1-P4-M1-M1";
 	planets[7]->radius = 0.1f;
 	planets[7]->rotation_speed = -0.8f;
-	planets[7]->relative_orbit = true;
 	planets[7]->orbit_anchor = planets[6];
 	planets[7]->orbit_axis = glm::normalize(glm::vec3(0.0f, 0.2f, 1.0f));
 	planets[7]->orbit_radius = 4.0f;

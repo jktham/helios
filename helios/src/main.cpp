@@ -36,6 +36,7 @@ int main()
 	glfwSetWindowPos(window, 100, 100);
 	glfwMakeContextCurrent(window);
 	gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
+	ui.window = window;
 
 	glViewport(0, 0, 1920, 1080);
 
@@ -70,7 +71,6 @@ int main()
 	camera.anchor = solarsystem.planets[0];
 
 	ui.initializePages();
-	ui.current_page = ui.pages[0];
 
 	while (!glfwWindowShouldClose(window))
 	{
@@ -98,8 +98,8 @@ int main()
 
 		solarsystem.drawPlanets();
 
-		ui.updatePage(ui.current_page);
-		ui.drawPage(ui.current_page);
+		ui.updatePage(ui.pages[ui.current_page]);
+		ui.drawPage(ui.pages[ui.current_page]);
 
 		glfwSwapBuffers(window);
 		glfwPollEvents();
@@ -178,11 +178,25 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 	}
 
 	for (int i = 0; i < 10 && i < solarsystem.planets.size(); i++)
+	{
 		if (key == GLFW_KEY_0 + i && action == GLFW_PRESS)
 		{
 			camera.anchor = solarsystem.planets[i];
 			//camera.offset = glm::normalize(camera.offset) * solarsystem.planets[i]->radius * 8.0f;
 		}
+	}
+
+	if (key == GLFW_KEY_ENTER && action == GLFW_PRESS)
+	{
+		if (ui.current_page < ui.pages.size() - 1)
+		{
+			ui.current_page += 1;
+		}
+		else
+		{
+			ui.current_page = 0;
+		}
+	}
 }
 
 void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)

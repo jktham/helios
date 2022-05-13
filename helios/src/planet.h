@@ -40,8 +40,7 @@ public:
 	float rotation_speed = 0.0f;
 	float rotation_offset = 0.0f;
 
-	bool relative_orbit = false;
-	Planet* orbit_anchor = this;
+	Planet* orbit_anchor = nullptr;
 	glm::vec3 orbit_center = glm::vec3(0.0f, 0.0f, 0.0f);
 	glm::vec3 orbit_axis = glm::normalize(glm::vec3(0.0f, 0.0f, 1.0f));
 	float orbit_radius = 0.0f;

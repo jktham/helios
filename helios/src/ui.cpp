@@ -1,6 +1,7 @@
 #include "ui.h"
 #include "global.h"
 
+#include <GLFW/glfw3.h>
 #include <glad/glad.h>
 #include <glm/glm.hpp>
 #include <glm/gtc/type_ptr.hpp>
@@ -9,6 +10,7 @@
 #include <vector>
 #include <string>
 #include <fstream>
+#include <iostream>
 
 void Element::compileShader()
 {
@@ -89,6 +91,13 @@ Quad::Quad()
 
 void Quad::generateMesh()
 {
+	glm::vec2 position = this->position;
+
+	if (parent)
+	{
+		position += parent->position;
+	}
+
 	vert_stride = 6;
 	mesh = {
 		position.x,			 position.y,		  color.r, color.g, color.b, color.a,
@@ -157,6 +166,13 @@ void TexturedQuad::loadTexture()
 
 void TexturedQuad::generateMesh()
 {
+	glm::vec2 position = this->position;
+
+	if (parent)
+	{
+		position += parent->position;
+	}
+
 	vert_stride = 8;
 	mesh = {
 		position.x,			 position.y,		  color.r, color.g, color.b, color.a, tex_position.x			 , tex_position.y,
@@ -220,6 +236,31 @@ void TexturedQuad::draw()
 	glUseProgram(0);
 }
 
+void Page::updateElements()
+{
+	float time = (float)glfwGetTime();
+	glm::dvec2 cursor = glm::vec2(0.0f, 0.0f);
+
+	if (cursor_enabled)
+	{
+		glfwSetInputMode(ui.window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+		glfwGetCursorPos(ui.window, &(cursor.x), &(cursor.y));
+	}
+	else
+	{
+		glfwSetInputMode(ui.window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+	}
+
+	if (id == 0)
+	{
+		ui.pages[0]->elements[0]->position.x = 100.0f + sin(time) * 100.0f;
+	}
+	else if (id == 1)
+	{
+		ui.pages[1]->elements[0]->position.y = 100.0f + sin(time) * 100.0f;
+	}
+}
+
 void Page::generateElements()
 {
 	for (int i = 0; i < elements.size(); i++)
@@ -240,23 +281,42 @@ void Page::drawElements()
 
 void UI::initializePages()
 {
-	for (int i = 0; i < 1; i++)
+	for (int i = 0; i < 2; i++)
 	{
 		Page* page = new Page;
+		page->id = i;
 		pages.push_back(page);
 	}
 
-	Quad* quad = new Quad;
+	Quad* quad;
+	TexturedQuad* tex_quad;
+
+	quad = new Quad;
 	quad->position = glm::vec2(100.0f, 100.0f);
 	quad->size = glm::vec2(200.0f, 200.0f);
 	quad->color = glm::vec4(1.0f, 1.0f, 1.0f, 0.5f);
 	pages[0]->elements.push_back(quad);
 
-	TexturedQuad* tex_quad = new TexturedQuad;
-	tex_quad->position = glm::vec2(100.0f, 400.0f);
+	tex_quad = new TexturedQuad;
+	tex_quad->position = glm::vec2(0.0f, 400.0f);
 	tex_quad->size = glm::vec2(200.0f, 200.0f);
 	tex_quad->color = glm::vec4(1.0f, 1.0f, 1.0f, 0.5f);
+	tex_quad->parent = quad;
 	pages[0]->elements.push_back(tex_quad);
+
+	quad = new Quad;
+	quad->position = glm::vec2(500.0f, 500.0f);
+	quad->size = glm::vec2(200.0f, 200.0f);
+	quad->color = glm::vec4(1.0f, 1.0f, 1.0f, 0.5f);
+	pages[1]->elements.push_back(quad);
+
+	tex_quad = new TexturedQuad;
+	tex_quad->position = glm::vec2(400.0f, 0.0f);
+	tex_quad->size = glm::vec2(200.0f, 200.0f);
+	tex_quad->color = glm::vec4(1.0f, 1.0f, 1.0f, 0.5f);
+	tex_quad->parent = quad;
+	pages[1]->elements.push_back(tex_quad);
+	pages[1]->cursor_enabled = true;
 
 	for (int i = 0; i < pages.size(); i++)
 		for (int j = 0; j < pages[i]->elements.size(); j++)
@@ -269,6 +329,7 @@ void UI::initializePages()
 
 void UI::updatePage(Page* page)
 {
+	page->updateElements();
 	page->generateElements();
 }
 

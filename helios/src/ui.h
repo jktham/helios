@@ -1,6 +1,7 @@
 #pragma once
 
 #include <glad/glad.h>
+#include <GLFW/glfw3.h>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
@@ -21,6 +22,8 @@ public:
 	GLuint vao = 0;
 	GLuint vbo = 0;
 	GLuint shader = 0;
+
+	Element* parent = nullptr;
 
 	virtual void compileShader();
 	virtual void generateBuffers();
@@ -67,6 +70,10 @@ class Page
 public:
 	std::vector<Element*> elements;
 
+	bool cursor_enabled = false;
+	int id = 0;
+
+	void updateElements();
 	void generateElements();
 	void drawElements();
 };
@@ -75,9 +82,11 @@ class UI
 {
 public:
 	std::vector<Page*> pages;
-	Page* current_page;
+	int current_page = 0;
 
 	glm::mat4 projection = glm::ortho(0.0f, 1920.0f, 1080.0f, 0.0f, -1.0f, 1.0f);
+
+	GLFWwindow* window;
 
 	void initializePages();
 	void updatePage(Page* page);

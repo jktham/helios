@@ -1,4 +1,6 @@
 #include "camera.h"
+#include "ui.h"
+#include "global.h"
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
@@ -17,6 +19,11 @@ void Camera::updatePosition()
 
 void Camera::applyMovement(Movement movement, float delta_time)
 {
+	if (ui.pages[ui.current_page]->cursor_enabled)
+	{
+		return;
+	}
+
 	glm::vec3 movement_vector = glm::vec3(0.0f);
 
 	if (movement == Movement::FRONT)
@@ -33,6 +40,11 @@ void Camera::applyMovement(Movement movement, float delta_time)
 
 void Camera::processMouseMovement(float offset_x, float offset_y)
 {
+	if (ui.pages[ui.current_page]->cursor_enabled)
+	{
+		return;
+	}
+
 	offset_x *= sensitivity;
 	offset_y *= sensitivity;
 
