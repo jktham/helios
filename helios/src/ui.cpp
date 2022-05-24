@@ -11,6 +11,7 @@
 #include <string>
 #include <fstream>
 #include <iostream>
+#include <algorithm>
 
 void Element::compileShader()
 {
@@ -147,11 +148,15 @@ void TexturedQuad::loadTexture()
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, texture);
 
-	stbi_set_flip_vertically_on_load(true);
+	stbi_set_flip_vertically_on_load(false);
 	data = stbi_load(texture_path.c_str(), &width, &height, &channels, 0);
 	if (data)
 	{
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+		if (transparency)
+			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
+		else
+			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+
 		glGenerateMipmap(GL_TEXTURE_2D);
 	}
 	stbi_image_free(data);
@@ -175,8 +180,8 @@ void TexturedQuad::generateMesh()
 
 	vert_stride = 8;
 	mesh = {
-		position.x,			 position.y,		  color.r, color.g, color.b, color.a, tex_position.x			 , tex_position.y,
-		position.x,			 position.y + size.y, color.r, color.g, color.b, color.a, tex_position.x			 , tex_position.y + tex_size.y,
+		position.x,			 position.y,		  color.r, color.g, color.b, color.a, tex_position.x,			   tex_position.y,
+		position.x,			 position.y + size.y, color.r, color.g, color.b, color.a, tex_position.x,			   tex_position.y + tex_size.y,
 		position.x + size.x, position.y,		  color.r, color.g, color.b, color.a, tex_position.x + tex_size.x, tex_position.y,
 
 		position.x + size.x, position.y,		  color.r, color.g, color.b, color.a, tex_position.x + tex_size.x, tex_position.y,
@@ -236,6 +241,133 @@ void TexturedQuad::draw()
 	glUseProgram(0);
 }
 
+Label::Label()
+{
+	shader_path = "src/ui_textured_quad";
+}
+
+void Label::generateFont()
+{
+	std::fstream file(font_path + ".csv", std::fstream::in);
+	std::string line;
+	std::vector<std::string> lines;
+	std::vector<std::string> values;
+	std::vector<float> widths;
+
+	while (std::getline(file, line, '\n'))
+	{
+		lines.push_back(line);
+	}
+
+	file.close();
+
+	for (int i = 0; i < lines.size(); i++)
+	{
+		values.push_back(lines[i].substr(lines[i].find(",") + 1));
+
+		if (i > 7 && i < 264)
+		{
+			widths.push_back(std::stof(values[i]) / std::stof(values[2]));
+		}
+	}
+
+	for (unsigned int c = 0; c < 256; c++)
+	{
+		float w = 1.0f / 16.0f;
+		float x = (c % 16) * w;
+		float y = (float)(c / 16) * w - 2 * w;
+
+		Glyph glyph = {
+			glm::vec2(x, y),
+			glm::vec2(w),
+			widths[c],
+		};
+
+		glyphs.insert(std::pair<int, Glyph>(c, glyph));
+	}
+}
+
+void Label::generateQuads()
+{
+	glyph_quads = {};
+	float offset = 0.0f;
+
+	for (int i = 0; i < text.length(); i++)
+	{
+		TexturedQuad* glyph_quad = new TexturedQuad;
+		glyph_quad->parent = this;
+		glyph_quad->texture_path = font_path + ".png";
+		glyph_quad->shader_path = shader_path;
+		glyph_quad->transparency = true;
+
+		Glyph glyph = glyphs[(int)(char)text[i]];
+		glyph_quad->position = glm::vec2(offset * scale.x, 0.0f);
+		glyph_quad->size = scale;
+		glyph_quad->tex_position = glyph.tex_position;
+		glyph_quad->tex_size = glyph.tex_size;
+
+		glyph_quads.push_back(glyph_quad);
+		//std::reverse(glyph_quads.begin(), glyph_quads.end());
+		offset += glyph.width;
+	}
+}
+
+void Label::compileShader()
+{
+	for (int i = 0; i < glyph_quads.size(); i++)
+	{
+		glyph_quads[i]->compileShader();
+	}
+}
+
+void Label::generateBuffers()
+{
+	for (int i = 0; i < glyph_quads.size(); i++)
+	{
+		glyph_quads[i]->generateBuffers();
+	}
+}
+
+void Label::loadTexture()
+{
+	for (int i = 0; i < glyph_quads.size(); i++)
+	{
+		glyph_quads[i]->loadTexture();
+	}
+}
+
+void Label::generateMesh()
+{
+	for (int i = 0; i < glyph_quads.size(); i++)
+	{
+		glyph_quads[i]->generateMesh();
+	}
+}
+
+void Label::updateBuffers()
+{
+	for (int i = 0; i < glyph_quads.size(); i++)
+	{
+		glyph_quads[i]->updateBuffers();
+	}
+}
+
+void Label::setUniforms()
+{
+	for (int i = 0; i < glyph_quads.size(); i++)
+	{
+		glyph_quads[i]->setUniforms();
+	}
+}
+
+void Label::draw()
+{
+	for (int i = 0; i < glyph_quads.size(); i++)
+	{
+		glyph_quads[i]->draw();
+	}
+}
+
 void Page::updateElements()
 {
 	float time = (float)glfwGetTime();
@@ -251,14 +383,8 @@ void Page::updateElements()
 		glfwSetInputMode(ui.window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 	}
 
-	if (id == 0)
-	{
-		ui.pages[0]->elements[0]->position.x = 100.0f + sin(time) * 100.0f;
-	}
-	else if (id == 1)
-	{
-		ui.pages[1]->elements[0]->position.y = 100.0f + sin(time) * 100.0f;
-	}
+	ui.pages[0]->elements[0]->position.x = 100.0f + sin(time) * 100.0f;
+	ui.pages[1]->elements[0]->position.y = 100.0f + sin(time) * 100.0f;
 }
 
 void Page::generateElements()
@@ -290,6 +416,7 @@ void UI::initializePages()
 
 	Quad* quad;
 	TexturedQuad* tex_quad;
+	Label* label;
 
 	quad = new Quad;
 	quad->position = glm::vec2(100.0f, 100.0f);
@@ -303,6 +430,13 @@ void UI::initializePages()
 	tex_quad->color = glm::vec4(1.0f, 1.0f, 1.0f, 0.5f);
 	tex_quad->parent = quad;
 	pages[0]->elements.push_back(tex_quad);
+
+	label = new Label;
+	label->position = glm::vec2(600.0f, 100.0f);
+	label->text = "ABCijk.,-?|:>@°§";
+	label->generateFont();
+	label->generateQuads();
+	pages[0]->elements.push_back(label);
 
 	quad = new Quad;
 	quad->position = glm::vec2(500.0f, 500.0f);

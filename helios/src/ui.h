@@ -7,6 +7,7 @@
 
 #include <vector>
 #include <string>
+#include <map>
 
 class Element
 {
@@ -52,6 +53,7 @@ public:
 	glm::vec4 color = glm::vec4(1.0f);
 	glm::vec2 tex_position = glm::vec2(0.0f);
 	glm::vec2 tex_size = glm::vec2(1.0f);
+	bool transparency = false;
 
 	std::string texture_path = "res/textures/test.png";
 
@@ -59,6 +61,39 @@ public:
 
 	TexturedQuad();
 	void loadTexture();
+	void generateMesh();
+	void updateBuffers();
+	void setUniforms();
+	void draw();
+};
+
+struct Glyph
+{
+	glm::vec2 tex_position = glm::vec2(0.0f);
+	glm::vec2 tex_size = glm::vec2(0.0f);
+	float width = 1.0f;
+};
+
+class Label : public Element
+{
+public:
+	glm::vec4 color = glm::vec4(1.0f);
+	glm::vec2 scale = glm::vec2(50.0f);
+	std::string text = "";
+	std::vector<TexturedQuad*> glyph_quads;
+	std::map<int, Glyph> glyphs;
+
+	std::string font_path = "res/fonts/arial";
+
+	Label();
+
+	void generateFont();
+	void generateQuads();
+
+	void compileShader();
+	void generateBuffers();
+	void loadTexture();
+
 	void generateMesh();
 	void updateBuffers();
 	void setUniforms();

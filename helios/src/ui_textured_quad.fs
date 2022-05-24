@@ -10,4 +10,6 @@ out vec4 frag_color;
 void main()
 {
     frag_color = color * texture(quad_texture, texcoord);
+    if(frag_color.a < 0.01)
+        discard;
 }

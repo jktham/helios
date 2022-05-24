@@ -161,6 +161,7 @@
     <ClInclude Include="src\solarsystem.h" />
   </ItemGroup>
   <ItemGroup>
+    <Image Include="res\fonts\arial.png" />
     <Image Include="res\textures\test.png" />
   </ItemGroup>
   <ItemGroup>
