@@ -148,7 +148,7 @@ void TexturedQuad::loadTexture()
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, texture);
 
-	stbi_set_flip_vertically_on_load(false);
+	stbi_set_flip_vertically_on_load(true);
 	data = stbi_load(texture_path.c_str(), &width, &height, &channels, 0);
 	if (data)
 	{
@@ -180,13 +180,13 @@ void TexturedQuad::generateMesh()
 
 	vert_stride = 8;
 	mesh = {
-		position.x,			 position.y,		  color.r, color.g, color.b, color.a, tex_position.x,			   tex_position.y,
-		position.x,			 position.y + size.y, color.r, color.g, color.b, color.a, tex_position.x,			   tex_position.y + tex_size.y,
-		position.x + size.x, position.y,		  color.r, color.g, color.b, color.a, tex_position.x + tex_size.x, tex_position.y,
+		position.x,			 position.y,		  color.r, color.g, color.b, color.a, tex_position.x,			   tex_position.y + tex_size.y,
+		position.x,			 position.y + size.y, color.r, color.g, color.b, color.a, tex_position.x,			   tex_position.y,
+		position.x + size.x, position.y,		  color.r, color.g, color.b, color.a, tex_position.x + tex_size.x, tex_position.y + tex_size.y,
 
-		position.x + size.x, position.y,		  color.r, color.g, color.b, color.a, tex_position.x + tex_size.x, tex_position.y,
-		position.x,			 position.y + size.y, color.r, color.g, color.b, color.a, tex_position.x,			   tex_position.y + tex_size.y,
-		position.x + size.x, position.y + size.y, color.r, color.g, color.b, color.a, tex_position.x + tex_size.x, tex_position.y + tex_size.y,
+		position.x + size.x, position.y,		  color.r, color.g, color.b, color.a, tex_position.x + tex_size.x, tex_position.y + tex_size.y,
+		position.x,			 position.y + size.y, color.r, color.g, color.b, color.a, tex_position.x,			   tex_position.y,
+		position.x + size.x, position.y + size.y, color.r, color.g, color.b, color.a, tex_position.x + tex_size.x, tex_position.y
 	};
 }
 
@@ -275,7 +275,7 @@ void Label::generateFont()
 	{
 		float w = 1.0f / 16.0f;
 		float x = (c % 16) * w;
-		float y = (float)(c / 16) * w - 2 * w;
+		float y = (float)(17 - c / 16) * w;
 
 		Glyph glyph = {
 			glm::vec2(x, y),
@@ -290,7 +290,7 @@ void Label::generateFont()
 void Label::generateQuads()
 {
 	glyph_quads = {};
-	float offset = 0.0f;
+	glm::vec2 offset = glm::vec2(0.0f);
 
 	for (int i = 0; i < text.length(); i++)
 	{
@@ -300,15 +300,22 @@ void Label::generateQuads()
 		glyph_quad->shader_path = shader_path;
 		glyph_quad->transparency = true;
 
-		Glyph glyph = glyphs[(int)(char)text[i]];
-		glyph_quad->position = glm::vec2(offset * scale.x, 0.0f);
+		int c = (int)(char)text[i];
+		if (c == 10)
+		{
+			offset.x = 0.0f;
+			offset.y += 1.2f;
+			continue;
+		}
+
+		Glyph glyph = glyphs[c];
+		glyph_quad->position = offset * scale;
 		glyph_quad->size = scale;
 		glyph_quad->tex_position = glyph.tex_position;
 		glyph_quad->tex_size = glyph.tex_size;
 
 		glyph_quads.push_back(glyph_quad);
-		//std::reverse(glyph_quads.begin(), glyph_quads.end());
-		offset += glyph.width;
+		offset.x += glyph.width;
 	}
 }
 
@@ -432,8 +439,8 @@ void UI::initializePages()
 	pages[0]->elements.push_back(tex_quad);
 
 	label = new Label;
-	label->position = glm::vec2(600.0f, 100.0f);
-	label->text = "ABCijk.,-?|:>@°§";
+	label->position = glm::vec2(100.0f, 100.0f);
+	label->text = "ABCijk.,-?|:>@}\nhello test 123!\n-------";
 	label->generateFont();
 	label->generateQuads();
 	pages[0]->elements.push_back(label);

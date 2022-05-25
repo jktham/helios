@@ -99,7 +99,9 @@ int main()
 		solarsystem.drawPlanets();
 
 		ui.updatePage(ui.pages[ui.current_page]);
+		glDisable(GL_DEPTH_TEST);
 		ui.drawPage(ui.pages[ui.current_page]);
+		glEnable(GL_DEPTH_TEST);
 
 		glfwSwapBuffers(window);
 		glfwPollEvents();
