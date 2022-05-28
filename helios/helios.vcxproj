@@ -173,6 +173,8 @@
     <None Include="src\planet_orbit.vs" />
     <None Include="src\sun_body.fs" />
     <None Include="src\sun_body.vs" />
+    <None Include="src\ui_label.fs" />
+    <None Include="src\ui_label.vs" />
     <None Include="src\ui_quad.fs" />
     <None Include="src\ui_quad.vs" />
     <None Include="src\ui_textured_quad.fs" />

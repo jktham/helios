@@ -80,18 +80,16 @@ public:
 	glm::vec4 color = glm::vec4(1.0f);
 	glm::vec2 scale = glm::vec2(50.0f);
 	std::string text = "";
-	std::vector<TexturedQuad*> glyph_quads;
 	std::map<int, Glyph> glyphs;
 
 	std::string font_path = "res/fonts/arial";
 
+	GLuint font_texture = 0;
+
 	Label();
 
 	void generateFont();
-	void generateQuads();
 
-	void compileShader();
-	void generateBuffers();
 	void loadTexture();
 
 	void generateMesh();

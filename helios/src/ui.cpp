@@ -243,7 +243,7 @@ void TexturedQuad::draw()
 
 Label::Label()
 {
-	shader_path = "src/ui_textured_quad";
+	shader_path = "src/ui_label";
 }
 
 void Label::generateFont()
@@ -287,19 +287,41 @@ void Label::generateFont()
 	}
 }
 
-void Label::generateQuads()
+void Label::loadTexture()
 {
-	glyph_quads = {};
+	generateFont();
+
+	int width, height, channels;
+	unsigned char* data;
+
+	glGenTextures(1, &font_texture);
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, font_texture);
+
+	stbi_set_flip_vertically_on_load(true);
+	data = stbi_load((font_path + ".png").c_str(), &width, &height, &channels, 0);
+	if (data)
+	{
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
+		glGenerateMipmap(GL_TEXTURE_2D);
+	}
+	stbi_image_free(data);
+
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+
+	glBindTexture(GL_TEXTURE_2D, 0);
+}
+
+void Label::generateMesh()
+{
+	mesh = {};
 	glm::vec2 offset = glm::vec2(0.0f);
 
 	for (int i = 0; i < text.length(); i++)
 	{
-		TexturedQuad* glyph_quad = new TexturedQuad;
-		glyph_quad->parent = this;
-		glyph_quad->texture_path = font_path + ".png";
-		glyph_quad->shader_path = shader_path;
-		glyph_quad->transparency = true;
-
 		int c = (int)(char)text[i];
 		if (c == 10)
 		{
@@ -309,70 +331,84 @@ void Label::generateQuads()
 		}
 
 		Glyph glyph = glyphs[c];
-		glyph_quad->position = offset * scale;
-		glyph_quad->size = scale;
-		glyph_quad->tex_position = glyph.tex_position;
-		glyph_quad->tex_size = glyph.tex_size;
+		glm::vec2 size = scale;
+		glm::vec2 tex_position = glyph.tex_position;
+		glm::vec2 tex_size = glyph.tex_size;
 
-		glyph_quads.push_back(glyph_quad);
+		glm::vec2 position = this->position;
+
+		if (parent)
+		{
+			position += parent->position;
+		}
+
+		position += offset * scale;
+
+		vert_stride = 8;
+		std::vector<float> verts = {
+			position.x,			 position.y,		  color.r, color.g, color.b, color.a, tex_position.x,			   tex_position.y + tex_size.y,
+			position.x,			 position.y + size.y, color.r, color.g, color.b, color.a, tex_position.x,			   tex_position.y,
+			position.x + size.x, position.y,		  color.r, color.g, color.b, color.a, tex_position.x + tex_size.x, tex_position.y + tex_size.y,
+
+			position.x + size.x, position.y,		  color.r, color.g, color.b, color.a, tex_position.x + tex_size.x, tex_position.y + tex_size.y,
+			position.x,			 position.y + size.y, color.r, color.g, color.b, color.a, tex_position.x,			   tex_position.y,
+			position.x + size.x, position.y + size.y, color.r, color.g, color.b, color.a, tex_position.x + tex_size.x, tex_position.y
+		};
+		mesh.insert(mesh.end(), verts.begin(), verts.end());
+
 		offset.x += glyph.width;
-	}
-}
-
-void Label::compileShader()
-{
-	for (int i = 0; i < glyph_quads.size(); i++)
-	{
-		glyph_quads[i]->compileShader();
-	}
-}
-
-void Label::generateBuffers()
-{
-	for (int i = 0; i < glyph_quads.size(); i++)
-	{
-		glyph_quads[i]->generateBuffers();
-	}
-}
-
-void Label::loadTexture()
-{
-	for (int i = 0; i < glyph_quads.size(); i++)
-	{
-		glyph_quads[i]->loadTexture();
-	}
-}
-
-void Label::generateMesh()
-{
-	for (int i = 0; i < glyph_quads.size(); i++)
-	{
-		glyph_quads[i]->generateMesh();
 	}
 }
 
 void Label::updateBuffers()
 {
-	for (int i = 0; i < glyph_quads.size(); i++)
-	{
-		glyph_quads[i]->updateBuffers();
-	}
+	glBindVertexArray(vao);
+
+	glBindBuffer(GL_ARRAY_BUFFER, vbo);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * mesh.size(), mesh.data(), GL_STATIC_DRAW);
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+	// position
+	glBindBuffer(GL_ARRAY_BUFFER, vbo);
+	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, vert_stride * sizeof(float), (void*)(0 * sizeof(float)));
+	glEnableVertexAttribArray(0);
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+	// color
+	glBindBuffer(GL_ARRAY_BUFFER, vbo);
+	glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, vert_stride * sizeof(float), (void*)(2 * sizeof(float)));
+	glEnableVertexAttribArray(1);
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+	// texcoord
+	glBindBuffer(GL_ARRAY_BUFFER, vbo);
+	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, vert_stride * sizeof(float), (void*)(6 * sizeof(float)));
+	glEnableVertexAttribArray(2);
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+	glBindVertexArray(0);
 }
 
 void Label::setUniforms()
 {
-	for (int i = 0; i < glyph_quads.size(); i++)
-	{
-		glyph_quads[i]->setUniforms();
-	}
+	glUseProgram(shader);
+	glUniformMatrix4fv(glGetUniformLocation(shader, "projection"), 1, GL_FALSE, glm::value_ptr(ui.projection));
+	glUniform1i(glGetUniformLocation(shader, "font_texture"), 0);
+	glUseProgram(0);
 }
 
 void Label::draw()
 {
-	for (int i = 0; i < glyph_quads.size(); i++)
-	{
-		glyph_quads[i]->draw();
-	}
+	glUseProgram(shader);
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, font_texture);
+	glBindVertexArray(vao);
+
+	glDrawArrays(GL_TRIANGLES, 0, (GLsizei)mesh.size() / vert_stride);
+
+	glBindVertexArray(0);
+	glBindTexture(GL_TEXTURE_2D, 0);
+	glUseProgram(0);
 }
 
 void Page::updateElements()
@@ -392,6 +428,9 @@ void Page::updateElements()
 
 	ui.pages[0]->elements[0]->position.x = 100.0f + sin(time) * 100.0f;
 	ui.pages[1]->elements[0]->position.y = 100.0f + sin(time) * 100.0f;
+	Label* label = (Label*)ui.pages[0]->elements[2];
+	label->position.y = 100.0f + sin(time) * 100.0f;
+	label->text = std::to_string(solarsystem.time_scale * !solarsystem.paused);
 }
 
 void Page::generateElements()
@@ -441,8 +480,7 @@ void UI::initializePages()
 	label = new Label;
 	label->position = glm::vec2(100.0f, 100.0f);
 	label->text = "ABCijk.,-?|:>@}\nhello test 123!\n-------";
-	label->generateFont();
-	label->generateQuads();
+	label->scale = glm::vec2(50.0f);
 	pages[0]->elements.push_back(label);
 
 	quad = new Quad;
