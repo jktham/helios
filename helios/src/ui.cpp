@@ -426,11 +426,12 @@ void Page::updateElements()
 		glfwSetInputMode(ui.window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 	}
 
-	ui.pages[0]->elements[0]->position.x = 100.0f + sin(time) * 100.0f;
-	ui.pages[1]->elements[0]->position.y = 100.0f + sin(time) * 100.0f;
-	Label* label = (Label*)ui.pages[0]->elements[2];
-	label->position.y = 100.0f + sin(time) * 100.0f;
-	label->text = std::to_string(solarsystem.time_scale * !solarsystem.paused);
+	Label* info_label = (Label*)ui.pages[0]->elements[0];
+	info_label->text = "salat\n";
+	info_label->text += "timescale: " + std::to_string(solarsystem.time_scale * !solarsystem.paused) + "\n";
+	info_label->text += "movespeed: " + std::to_string(camera.speed) + "\n";
+	info_label->text += "position: " + std::to_string(camera.position.x) + ", " + std::to_string(camera.position.y) + ", " + std::to_string(camera.position.z) + "\n";
+	info_label->text += "anchor: " + camera.anchor->name + "\n";
 }
 
 void Page::generateElements()
@@ -460,42 +461,11 @@ void UI::initializePages()
 		pages.push_back(page);
 	}
 
-	Quad* quad;
-	TexturedQuad* tex_quad;
-	Label* label;
-
-	quad = new Quad;
-	quad->position = glm::vec2(100.0f, 100.0f);
-	quad->size = glm::vec2(200.0f, 200.0f);
-	quad->color = glm::vec4(1.0f, 1.0f, 1.0f, 0.5f);
-	pages[0]->elements.push_back(quad);
-
-	tex_quad = new TexturedQuad;
-	tex_quad->position = glm::vec2(0.0f, 400.0f);
-	tex_quad->size = glm::vec2(200.0f, 200.0f);
-	tex_quad->color = glm::vec4(1.0f, 1.0f, 1.0f, 0.5f);
-	tex_quad->parent = quad;
-	pages[0]->elements.push_back(tex_quad);
-
-	label = new Label;
-	label->position = glm::vec2(100.0f, 100.0f);
-	label->text = "ABCijk.,-?|:>@}\nhello test 123!\n-------";
-	label->scale = glm::vec2(50.0f);
-	pages[0]->elements.push_back(label);
-
-	quad = new Quad;
-	quad->position = glm::vec2(500.0f, 500.0f);
-	quad->size = glm::vec2(200.0f, 200.0f);
-	quad->color = glm::vec4(1.0f, 1.0f, 1.0f, 0.5f);
-	pages[1]->elements.push_back(quad);
-
-	tex_quad = new TexturedQuad;
-	tex_quad->position = glm::vec2(400.0f, 0.0f);
-	tex_quad->size = glm::vec2(200.0f, 200.0f);
-	tex_quad->color = glm::vec4(1.0f, 1.0f, 1.0f, 0.5f);
-	tex_quad->parent = quad;
-	pages[1]->elements.push_back(tex_quad);
-	pages[1]->cursor_enabled = true;
+	Label* info_label = new Label;
+	info_label->position = glm::vec2(10.0f, 10.0f);
+	info_label->scale = glm::vec2(30.0f);
+	info_label->text = "info";
+	pages[0]->elements.push_back(info_label);
 
 	for (int i = 0; i < pages.size(); i++)
 		for (int j = 0; j < pages[i]->elements.size(); j++)

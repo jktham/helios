@@ -165,13 +165,34 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 		camera.speed /= 10.0f;
 	}
 
+	if (key == GLFW_KEY_UP && action == GLFW_PRESS)
+	{
+		camera.speed *= 2.0f;
+	}
+	if (key == GLFW_KEY_DOWN && action == GLFW_PRESS)
+	{
+		camera.speed *= 0.5f;
+	}
+
 	if (key == GLFW_KEY_LEFT && action == GLFW_PRESS)
 	{
-		solarsystem.time_scale -= 0.5f;
+		if (solarsystem.time_scale < 0.0f)
+			solarsystem.time_scale *= 2.0f;
+		else
+			solarsystem.time_scale *= 0.5f;
+
+		if (abs(solarsystem.time_scale) < 1.0f / pow(2.0f, 6))
+			solarsystem.time_scale *= -2.0f;
 	}
 	if (key == GLFW_KEY_RIGHT && action == GLFW_PRESS)
 	{
-		solarsystem.time_scale += 0.5f;
+		if (solarsystem.time_scale < 0.0f)
+			solarsystem.time_scale *= 0.5f;
+		else
+			solarsystem.time_scale *= 2.0f;
+
+		if (abs(solarsystem.time_scale) < 1.0f / pow(2.0f, 6))
+			solarsystem.time_scale *= -2.0f;
 	}
 
 	if (key == GLFW_KEY_SPACE && action == GLFW_PRESS)
@@ -228,7 +249,6 @@ void mouse_cursor_callback(GLFWwindow* window, double pos_x, double pos_y)
 
 void mouse_scroll_callback(GLFWwindow* window, double offset_x, double offset_y)
 {
-	camera.speed += (float)offset_y * 10.0f;
 }
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height)

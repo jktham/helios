@@ -344,6 +344,7 @@ void Planet::updatePosition(float delta_time)
 	}
 
 	orbit_offset += orbit_speed * delta_time * solarsystem.time_scale * !solarsystem.paused;
+	orbit_offset = fmod(orbit_offset, 2.0f * 3.1415926f);
 
 	glm::vec3 up = glm::vec3(0.0f, 0.0f, 1.0f);
 	glm::vec3 orbit_plane_i = glm::vec3(glm::cross(up, orbit_axis));
@@ -365,6 +366,7 @@ void Planet::updatePosition(float delta_time)
 void Planet::updateRotation(float delta_time)
 {
 	rotation_offset += rotation_speed * delta_time * solarsystem.time_scale * !solarsystem.paused;
+	rotation_offset = fmod(rotation_offset, 3.0f * 3.1415926f);
 }
 
 void Planet::updateModelMatrix()
