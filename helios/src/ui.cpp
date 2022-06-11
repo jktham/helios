@@ -432,6 +432,20 @@ void Page::updateElements()
 	info_label->text += "movespeed: " + std::to_string(camera.speed) + "\n";
 	info_label->text += "position: " + std::to_string(camera.position.x) + ", " + std::to_string(camera.position.y) + ", " + std::to_string(camera.position.z) + "\n";
 	info_label->text += "anchor: " + camera.anchor->name + "\n";
+
+	Label* planet_label = (Label*)ui.pages[0]->elements[1];
+	planet_label->position = glm::vec2(200.0f);
+	planet_label->text = "";
+	planet_label->text += "name: " + camera.anchor->name + "\n";
+	planet_label->text += "mass: " + std::to_string(camera.anchor->mass) + "\n";
+	planet_label->text += "radius: " + std::to_string(camera.anchor->radius) + "\n";
+	planet_label->text += "orbit radius: " + std::to_string(camera.anchor->orbit_radius) + "\n";
+	if (camera.anchor->orbit_anchor)
+		planet_label->text += "orbit anchor: " + camera.anchor->orbit_anchor->name + "\n";
+	planet_label->text += "orbit speed: " + std::to_string(camera.anchor->orbit_speed) + "\n";
+	planet_label->text += "orbit offset: " + std::to_string(camera.anchor->orbit_offset) + "\n";
+	planet_label->text += "rotation speed: " + std::to_string(camera.anchor->rotation_speed) + "\n";
+	planet_label->text += "rotation offset: " + std::to_string(camera.anchor->rotation_offset) + "\n";
 }
 
 void Page::generateElements()
@@ -463,9 +477,15 @@ void UI::initializePages()
 
 	Label* info_label = new Label;
 	info_label->position = glm::vec2(10.0f, 10.0f);
-	info_label->scale = glm::vec2(30.0f);
+	info_label->scale = glm::vec2(36.0f);
 	info_label->text = "info";
 	pages[0]->elements.push_back(info_label);
+
+	Label* planet_label = new Label;
+	planet_label->position = glm::vec2(1000.0f, 10.0f);
+	planet_label->scale = glm::vec2(24.0f);
+	planet_label->text = "planet";
+	pages[0]->elements.push_back(planet_label);
 
 	for (int i = 0; i < pages.size(); i++)
 		for (int j = 0; j < pages[i]->elements.size(); j++)

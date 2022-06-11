@@ -366,7 +366,7 @@ void Planet::updatePosition(float delta_time)
 void Planet::updateRotation(float delta_time)
 {
 	rotation_offset += rotation_speed * delta_time * solarsystem.time_scale * !solarsystem.paused;
-	rotation_offset = fmod(rotation_offset, 3.0f * 3.1415926f);
+	rotation_offset = fmod(rotation_offset, 2.0f * 3.1415926f);
 }
 
 void Planet::updateModelMatrix()
