@@ -433,8 +433,17 @@ void Page::updateElements()
 	info_label->text += "position: " + std::to_string(camera.position.x) + ", " + std::to_string(camera.position.y) + ", " + std::to_string(camera.position.z) + "\n";
 	info_label->text += "anchor: " + camera.anchor->name + "\n";
 
+	glm::vec4 planet_world_pos = glm::vec4(camera.anchor->position, 1.0f);
+	glm::vec4 planet_clip_pos = camera.projection * (camera.view * planet_world_pos);
+	glm::vec2 planet_window_pos = glm::vec2(-9999.0f);
+	if (planet_clip_pos.w > 0.0f)
+	{
+		glm::vec2 planet_screen_pos = glm::vec3(planet_clip_pos) / planet_clip_pos.w;
+		planet_window_pos = ((planet_screen_pos + glm::vec2(1.0f)) / 2.0f) * glm::vec2(1920.0f, -1080.0f) + glm::vec2(0.0f, 1080.0f);
+	}
+
 	Label* planet_label = (Label*)ui.pages[0]->elements[1];
-	planet_label->position = glm::vec2(200.0f);
+	planet_label->position = planet_window_pos + glm::vec2(0.0f, 0.0f);
 	planet_label->text = "";
 	planet_label->text += "name: " + camera.anchor->name + "\n";
 	planet_label->text += "mass: " + std::to_string(camera.anchor->mass) + "\n";
@@ -442,6 +451,8 @@ void Page::updateElements()
 	planet_label->text += "orbit radius: " + std::to_string(camera.anchor->orbit_radius) + "\n";
 	if (camera.anchor->orbit_anchor)
 		planet_label->text += "orbit anchor: " + camera.anchor->orbit_anchor->name + "\n";
+	else
+		planet_label->text += "orbit center: " + std::to_string(camera.anchor->orbit_center.x) + ", " + std::to_string(camera.anchor->orbit_center.y) + ", " + std::to_string(camera.anchor->orbit_center.z) + "\n";
 	planet_label->text += "orbit speed: " + std::to_string(camera.anchor->orbit_speed) + "\n";
 	planet_label->text += "orbit offset: " + std::to_string(camera.anchor->orbit_offset) + "\n";
 	planet_label->text += "rotation speed: " + std::to_string(camera.anchor->rotation_speed) + "\n";
