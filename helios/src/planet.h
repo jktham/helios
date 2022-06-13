@@ -33,6 +33,7 @@ public:
 	float radius = 1.0f;
 	unsigned long int mass = 0;
 	std::string name = "";
+	int id = 0;
 
 	glm::vec3 pole_axis = glm::normalize(glm::vec3(0.0f, 0.0f, 1.0f));
 

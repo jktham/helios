@@ -116,6 +116,7 @@ class UI
 public:
 	std::vector<Page*> pages;
 	int current_page = 0;
+	bool enabled = true;
 
 	glm::mat4 projection = glm::ortho(0.0f, 1920.0f, 1080.0f, 0.0f, -1.0f, 1.0f);
 

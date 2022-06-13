@@ -83,7 +83,7 @@ int main()
 
 		std::cout << std::fixed;
 		std::cout << std::setprecision(4);
-		std::cout << "delta: " << delta_time << ", pos: (" << camera.position.x << ", " << camera.position.y << ", " << camera.position.z << ")\n";
+		std::cout << "delta: " << delta_time << ", fps: " << 1.0f/delta_time << ", time: " << (float)glfwGetTime() << "\n";
 
 		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -219,6 +219,11 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 		{
 			ui.current_page = 0;
 		}
+	}
+
+	if (key == GLFW_KEY_Q && action == GLFW_PRESS)
+	{
+		ui.enabled = !ui.enabled;
 	}
 }
 
