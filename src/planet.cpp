@@ -176,7 +176,8 @@ void Planet::generateMesh()
 			0.0f, 0.0f, 1.0f,
 			0.0f, 0.0f, 1.0f,
 			i * 1.0f / (float)points, 0.0f,
-			1.0f, 1.0f, 1.0f, 1.0f};
+			1.0f, 1.0f, 1.0f, 1.0f
+		};
 		body_vertices.insert(body_vertices.end(), vertex.begin(), vertex.end());
 
 		// north pole seam vertex
@@ -186,7 +187,8 @@ void Planet::generateMesh()
 				0.0f, 0.0f, 1.0f,
 				0.0f, 0.0f, 1.0f,
 				1.0f, 0.0f,
-				1.0f, 1.0f, 1.0f, 1.0f};
+				1.0f, 1.0f, 1.0f, 1.0f
+			};
 			body_vertices.insert(body_vertices.end(), vertex.begin(), vertex.end());
 		}
 	}
@@ -208,7 +210,8 @@ void Planet::generateMesh()
 				x, y, z,
 				x, y, z,
 				u, v,
-				1.0f, 1.0f, 1.0f, 1.0f};
+				1.0f, 1.0f, 1.0f, 1.0f
+			};
 			body_vertices.insert(body_vertices.end(), vertex.begin(), vertex.end());
 
 			phi += delta_phi;
@@ -226,7 +229,8 @@ void Planet::generateMesh()
 					x, y, z,
 					x, y, z,
 					u, v,
-					1.0f, 1.0f, 1.0f, 1.0f};
+					1.0f, 1.0f, 1.0f, 1.0f
+				};
 				body_vertices.insert(body_vertices.end(), vertex.begin(), vertex.end());
 			}
 		}
@@ -239,7 +243,8 @@ void Planet::generateMesh()
 			0.0f, 0.0f, -1.0f,
 			0.0f, 0.0f, -1.0f,
 			i * 1.0f / (float)points, 1.0f,
-			1.0f, 1.0f, 1.0f, 1.0f};
+			1.0f, 1.0f, 1.0f, 1.0f
+		};
 		body_vertices.insert(body_vertices.end(), vertex.begin(), vertex.end());
 
 		// south pole seam vertex
@@ -249,7 +254,8 @@ void Planet::generateMesh()
 				0.0f, 0.0f, -1.0f,
 				0.0f, 0.0f, -1.0f,
 				1.0f, 1.0f,
-				1.0f, 1.0f, 1.0f, 1.0f};
+				1.0f, 1.0f, 1.0f, 1.0f
+			};
 			body_vertices.insert(body_vertices.end(), vertex.begin(), vertex.end());
 		}
 	}
@@ -332,10 +338,12 @@ void Planet::generateMesh()
 	// axis vertices
 	float length = 1.5f;
 	vertex = {
-		0.0f, 0.0f, length};
+		0.0f, 0.0f, length
+	};
 	axis_vertices.insert(axis_vertices.end(), vertex.begin(), vertex.end());
 	vertex = {
-		0.0f, 0.0f, -length};
+		0.0f, 0.0f, -length
+	};
 	axis_vertices.insert(axis_vertices.end(), vertex.begin(), vertex.end());
 }
 

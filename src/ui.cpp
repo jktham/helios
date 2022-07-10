@@ -101,43 +101,13 @@ void Quad::generateMesh()
 
 	vert_stride = 6;
 	mesh = {
-		position.x,
-		position.y,
-		color.r,
-		color.g,
-		color.b,
-		color.a,
-		position.x,
-		position.y + size.y,
-		color.r,
-		color.g,
-		color.b,
-		color.a,
-		position.x + size.x,
-		position.y,
-		color.r,
-		color.g,
-		color.b,
-		color.a,
+		position.x,			 position.y,		  color.r, color.g, color.b, color.a,
+		position.x,			 position.y + size.y, color.r, color.g, color.b, color.a,
+		position.x + size.x, position.y,		  color.r, color.g, color.b, color.a,
 
-		position.x + size.x,
-		position.y,
-		color.r,
-		color.g,
-		color.b,
-		color.a,
-		position.x,
-		position.y + size.y,
-		color.r,
-		color.g,
-		color.b,
-		color.a,
-		position.x + size.x,
-		position.y + size.y,
-		color.r,
-		color.g,
-		color.b,
-		color.a,
+		position.x + size.x, position.y,		  color.r, color.g, color.b, color.a,
+		position.x,			 position.y + size.y, color.r, color.g, color.b, color.a,
+		position.x + size.x, position.y + size.y, color.r, color.g, color.b, color.a,
 	};
 }
 
@@ -210,13 +180,14 @@ void TexturedQuad::generateMesh()
 
 	vert_stride = 8;
 	mesh = {
-		position.x, position.y, color.r, color.g, color.b, color.a, tex_position.x, tex_position.y + tex_size.y,
-		position.x, position.y + size.y, color.r, color.g, color.b, color.a, tex_position.x, tex_position.y,
-		position.x + size.x, position.y, color.r, color.g, color.b, color.a, tex_position.x + tex_size.x, tex_position.y + tex_size.y,
+		position.x,			 position.y,		  color.r, color.g, color.b, color.a, tex_position.x,			   tex_position.y + tex_size.y,
+		position.x,			 position.y + size.y, color.r, color.g, color.b, color.a, tex_position.x,			   tex_position.y,
+		position.x + size.x, position.y,		  color.r, color.g, color.b, color.a, tex_position.x + tex_size.x, tex_position.y + tex_size.y,
 
-		position.x + size.x, position.y, color.r, color.g, color.b, color.a, tex_position.x + tex_size.x, tex_position.y + tex_size.y,
-		position.x, position.y + size.y, color.r, color.g, color.b, color.a, tex_position.x, tex_position.y,
-		position.x + size.x, position.y + size.y, color.r, color.g, color.b, color.a, tex_position.x + tex_size.x, tex_position.y};
+		position.x + size.x, position.y,		  color.r, color.g, color.b, color.a, tex_position.x + tex_size.x, tex_position.y + tex_size.y,
+		position.x,			 position.y + size.y, color.r, color.g, color.b, color.a, tex_position.x,			   tex_position.y,
+		position.x + size.x, position.y + size.y, color.r, color.g, color.b, color.a, tex_position.x + tex_size.x, tex_position.y
+	};
 }
 
 void TexturedQuad::updateBuffers()
@@ -375,13 +346,14 @@ void Label::generateMesh()
 
 		vert_stride = 8;
 		std::vector<float> verts = {
-			position.x, position.y, color.r, color.g, color.b, color.a, tex_position.x, tex_position.y + tex_size.y,
-			position.x, position.y + size.y, color.r, color.g, color.b, color.a, tex_position.x, tex_position.y,
-			position.x + size.x, position.y, color.r, color.g, color.b, color.a, tex_position.x + tex_size.x, tex_position.y + tex_size.y,
+			position.x,			 position.y,		  color.r, color.g, color.b, color.a, tex_position.x,			   tex_position.y + tex_size.y,
+			position.x,			 position.y + size.y, color.r, color.g, color.b, color.a, tex_position.x,			   tex_position.y,
+			position.x + size.x, position.y,		  color.r, color.g, color.b, color.a, tex_position.x + tex_size.x, tex_position.y + tex_size.y,
 
-			position.x + size.x, position.y, color.r, color.g, color.b, color.a, tex_position.x + tex_size.x, tex_position.y + tex_size.y,
-			position.x, position.y + size.y, color.r, color.g, color.b, color.a, tex_position.x, tex_position.y,
-			position.x + size.x, position.y + size.y, color.r, color.g, color.b, color.a, tex_position.x + tex_size.x, tex_position.y};
+			position.x + size.x, position.y,		  color.r, color.g, color.b, color.a, tex_position.x + tex_size.x, tex_position.y + tex_size.y,
+			position.x,			 position.y + size.y, color.r, color.g, color.b, color.a, tex_position.x,			   tex_position.y,
+			position.x + size.x, position.y + size.y, color.r, color.g, color.b, color.a, tex_position.x + tex_size.x, tex_position.y
+		};
 		mesh.insert(mesh.end(), verts.begin(), verts.end());
 
 		offset.x += glyph.width;
